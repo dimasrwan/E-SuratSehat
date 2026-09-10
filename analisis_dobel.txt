@@ -1,0 +1,585 @@
+ANALISIS DUPLIKAT NOMOR SURAT
+=================================
+
+1. DOBEL TAPI ORANGNYA SAMA (Kemungkinan ter-klik 'Simpan' berkali-kali)
+Jumlah kasus: 3
+------------------------------------------------------------------------
+- 0220/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 277 | Nama: Khaira Radhwa | Dibuat: 2026-08-15 12:07:15
+   => ID: 285 | Nama: Khaira Radhwa | Dibuat: 2026-08-15 12:07:57
+- 0311/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 535 | Nama: Nur Safariah | Dibuat: 2026-08-15 16:24:35
+   => ID: 537 | Nama: Nur Safariah | Dibuat: 2026-08-15 16:24:37
+- 1597/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1419 | Nama: M. Fadlus Syukra | Dibuat: 2026-08-17 14:41:28
+   => ID: 1420 | Nama: M. Fadlus Syukra | Dibuat: 2026-08-17 14:41:29
+
+
+2. DOBEL TAPI ORANGNYA BEDA (Bentrokan antar operator)
+Jumlah kasus: 184
+------------------------------------------------------------------------
+- 0280/Un.08/PPKES/08/2026 (Ada 7 data)
+   => ID: 17 | Nama: Fatih Arrozzaq | Dibuat: 2026-08-15 09:17:33
+   => ID: 279 | Nama: AYUNI MAHARA BENGI | Dibuat: 2026-08-15 12:07:32
+   => ID: 280 | Nama: AYUNI MAHARA BENGI | Dibuat: 2026-08-15 12:07:33
+   => ID: 281 | Nama: AYUNI MAHARA BENGI | Dibuat: 2026-08-15 12:07:52
+   => ID: 282 | Nama: AYUNI MAHARA BENGI | Dibuat: 2026-08-15 12:07:54
+   => ID: 283 | Nama: AYUNI MAHARA BENGI | Dibuat: 2026-08-15 12:07:54
+   => ID: 284 | Nama: AYUNI MAHARA BENGI | Dibuat: 2026-08-15 12:07:57
+- 0231/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 23 | Nama: Fahmi Gusti Aulia | Dibuat: 2026-08-15 09:24:12
+   => ID: 124 | Nama: dhiaursidqi al-masyhura | Dibuat: 2026-08-15 10:31:40
+- 0444/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 24 | Nama: Sulkan Aliansyah | Dibuat: 2026-08-15 09:25:34
+   => ID: 105 | Nama: Nabila Fonna | Dibuat: 2026-08-15 10:20:15
+- 0232/Un.08/PPKES/08/2026 (Ada 3 data)
+   => ID: 26 | Nama: Refi Mariska | Dibuat: 2026-08-15 09:27:08
+   => ID: 130 | Nama: cut ayu agustijak | Dibuat: 2026-08-15 10:34:53
+   => ID: 138 | Nama: desva jatul | Dibuat: 2026-08-15 10:40:04
+- 0445/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 27 | Nama: Hilal Fikri | Dibuat: 2026-08-15 09:29:38
+   => ID: 109 | Nama: Ainun Marziah | Dibuat: 2026-08-15 10:23:11
+- 0233/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 29 | Nama: Cut Sri Hartanti | Dibuat: 2026-08-15 09:31:05
+   => ID: 144 | Nama: tripani okta safitri | Dibuat: 2026-08-15 10:44:08
+- 0335/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 30 | Nama: Ali Hasrimi | Dibuat: 2026-08-15 09:31:29
+   => ID: 35 | Nama: Ahmad Farhan | Dibuat: 2026-08-15 09:35:00
+- 0234/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 33 | Nama: Aris Munandar | Dibuat: 2026-08-15 09:34:09
+   => ID: 151 | Nama: NAVIN RISTY | Dibuat: 2026-08-15 10:48:08
+- 0235/Un.08/PPKES/08/2026 (Ada 3 data)
+   => ID: 39 | Nama: Rayyan Naura | Dibuat: 2026-08-15 09:37:48
+   => ID: 43 | Nama: Annisa Shabirah | Dibuat: 2026-08-15 09:40:23
+   => ID: 158 | Nama: NEFFA ISTIQAMAH | Dibuat: 2026-08-15 10:51:35
+- 0177/Un.08/PPKES/08/2026 (Ada 4 data)
+   => ID: 44 | Nama: Yudil Aulianda | Dibuat: 2026-08-15 09:40:28
+   => ID: 45 | Nama: Yudil Aulianda | Dibuat: 2026-08-15 09:40:47
+   => ID: 47 | Nama: Yudil Aulianda | Dibuat: 2026-08-15 09:40:48
+   => ID: 60 | Nama: Muhammad Iqbal | Dibuat: 2026-08-15 09:49:44
+- 0236/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 51 | Nama: Laudia Amanda | Dibuat: 2026-08-15 09:43:42
+   => ID: 164 | Nama: IZZA NAFIZA.WD | Dibuat: 2026-08-15 10:55:02
+- 0178/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 53 | Nama: Hikma Restia | Dibuat: 2026-08-15 09:44:07
+   => ID: 56 | Nama: Tara Al klhaira | Dibuat: 2026-08-15 09:47:11
+- 0237/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 58 | Nama: Akmal Syauqi Shanhaji | Dibuat: 2026-08-15 09:48:00
+   => ID: 170 | Nama: ROJJIL AZIZI | Dibuat: 2026-08-15 10:58:40
+- 0238/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 62 | Nama: Riska Nazila | Dibuat: 2026-08-15 09:51:03
+   => ID: 180 | Nama: RAUDHATUZ ZAHRA | Dibuat: 2026-08-15 11:05:18
+- 0179/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 67 | Nama: Erlina Junita | Dibuat: 2026-08-15 09:53:23
+   => ID: 73 | Nama: Annisa maharani | Dibuat: 2026-08-15 09:57:02
+- 0239/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 68 | Nama: Nur Fisniana | Dibuat: 2026-08-15 09:53:25
+   => ID: 183 | Nama: CUT KHALIZA | Dibuat: 2026-08-15 11:08:19
+- 0227/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 69 | Nama: Fazil Mukarram | Dibuat: 2026-08-15 09:55:54
+   => ID: 90 | Nama: Fahri Rizky Maulana | Dibuat: 2026-08-15 10:08:53
+- 0240/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 71 | Nama: Sarimah | Dibuat: 2026-08-15 09:56:32
+   => ID: 189 | Nama: INDAH ALIFAH N.L | Dibuat: 2026-08-15 11:12:19
+- 0241/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 76 | Nama: Salsa Al Maqfirah | Dibuat: 2026-08-15 09:59:35
+   => ID: 196 | Nama: SARAH ALYA | Dibuat: 2026-08-15 11:16:21
+- 0242/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 79 | Nama: Rafly Ahmad | Dibuat: 2026-08-15 10:02:27
+   => ID: 202 | Nama: APRILISYA AMALIA | Dibuat: 2026-08-15 11:20:39
+- 0243/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 85 | Nama: Pida Rahayu | Dibuat: 2026-08-15 10:05:26
+   => ID: 209 | Nama: MUHAMMAD FAHRI S | Dibuat: 2026-08-15 11:23:25
+- 0181/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 87 | Nama: Ghafar Arviya | Dibuat: 2026-08-15 10:07:18
+   => ID: 92 | Nama: Mulkan Novriza | Dibuat: 2026-08-15 10:09:52
+- 0244/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 89 | Nama: Nazyia Humaira | Dibuat: 2026-08-15 10:08:30
+   => ID: 220 | Nama: NISA SALSABILA | Dibuat: 2026-08-15 11:29:42
+- 0245/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 96 | Nama: Aprillia Syah Putri | Dibuat: 2026-08-15 10:13:07
+   => ID: 225 | Nama: M HAFIDH IKHWAN | Dibuat: 2026-08-15 11:32:25
+- 0182/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 97 | Nama: Nuruun Qalbina | Dibuat: 2026-08-15 10:13:12
+   => ID: 103 | Nama: Putri Kencana | Dibuat: 2026-08-15 10:18:41
+- 0246/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 100 | Nama: Nity Shara | Dibuat: 2026-08-15 10:15:45
+   => ID: 232 | Nama: HAIRANI | Dibuat: 2026-08-15 11:35:53
+- 0247/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 104 | Nama: Fathiya Almira | Dibuat: 2026-08-15 10:19:32
+   => ID: 238 | Nama: EWA MAILANI | Dibuat: 2026-08-15 11:39:54
+- 0249/Un.08/PPKES/08/2026 (Ada 3 data)
+   => ID: 110 | Nama: Sahara Putri | Dibuat: 2026-08-15 10:23:21
+   => ID: 111 | Nama: Sahara Putri | Dibuat: 2026-08-15 10:23:22
+   => ID: 308 | Nama: Sultan arief al-tsaqif | Dibuat: 2026-08-15 14:21:00
+- 0250/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 115 | Nama: Aghna Muthmainnah | Dibuat: 2026-08-15 10:25:43
+   => ID: 313 | Nama: Alya Safrina | Dibuat: 2026-08-15 14:24:07
+- 0251/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 120 | Nama: Asyifa Salsabila | Dibuat: 2026-08-15 10:29:10
+   => ID: 314 | Nama: Ruwaida Nashifa | Dibuat: 2026-08-15 14:24:45
+- 0252/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 125 | Nama: Ayu Mawaddah | Dibuat: 2026-08-15 10:31:59
+   => ID: 322 | Nama: M.KAUSAR ALGIVVARI | Dibuat: 2026-08-15 14:29:03
+- 0253/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 136 | Nama: Ryan Alkahfi | Dibuat: 2026-08-15 10:39:18
+   => ID: 319 | Nama: Zuannuddin | Dibuat: 2026-08-15 14:27:39
+- 0254/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 141 | Nama: Cut Nada Fadhilah Rahma | Dibuat: 2026-08-15 10:42:22
+   => ID: 327 | Nama: Rahman Habib | Dibuat: 2026-08-15 14:31:46
+- 0405/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 142 | Nama: Cantika Sulistia | Dibuat: 2026-08-15 10:43:04
+   => ID: 165 | Nama: Fatiya Faizah | Dibuat: 2026-08-15 10:55:03
+- 0255/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 148 | Nama: Naswa Syahira | Dibuat: 2026-08-15 10:46:04
+   => ID: 325 | Nama: Safwan Helmi | Dibuat: 2026-08-15 14:30:47
+- 0406/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 149 | Nama: Musfirah | Dibuat: 2026-08-15 10:46:37
+   => ID: 155 | Nama: FAIZA AKMALIA | Dibuat: 2026-08-15 10:50:14
+- 0256/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 153 | Nama: Fera Safrina | Dibuat: 2026-08-15 10:49:02
+   => ID: 334 | Nama: Mulkan Askhiya | Dibuat: 2026-08-15 14:35:10
+- 0257/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 159 | Nama: Adinda Mayanfau'una | Dibuat: 2026-08-15 10:51:52
+   => ID: 331 | Nama: Ikriza Rizki | Dibuat: 2026-08-15 14:33:35
+- 0258/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 163 | Nama: Nurul Azkia | Dibuat: 2026-08-15 10:54:30
+   => ID: 339 | Nama: Muhammad Harris | Dibuat: 2026-08-15 14:37:41
+- 0259/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 173 | Nama: Kesya Arn Hilda Amella Nayoan | Dibuat: 2026-08-15 11:00:18
+   => ID: 337 | Nama: Muhammad Rizal | Dibuat: 2026-08-15 14:36:28
+- 0260/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 178 | Nama: Allifia Fajri | Dibuat: 2026-08-15 11:03:59
+   => ID: 345 | Nama: NURUL HASANAH | Dibuat: 2026-08-15 14:41:43
+- 0261/Un.08/PPKES/08/2026 (Ada 3 data)
+   => ID: 184 | Nama: Millati Suci Aufa | Dibuat: 2026-08-15 11:09:16
+   => ID: 188 | Nama: Sahrina | Dibuat: 2026-08-15 11:11:56
+   => ID: 344 | Nama: M. Siddiq Al-Farissi | Dibuat: 2026-08-15 14:40:46
+- 0262/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 195 | Nama: Putri Humaira | Dibuat: 2026-08-15 11:15:44
+   => ID: 350 | Nama: NELVI YANI | Dibuat: 2026-08-15 14:44:32
+- 0263/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 201 | Nama: Endang Yulisyani | Dibuat: 2026-08-15 11:18:25
+   => ID: 355 | Nama: Darma Wandari | Dibuat: 2026-08-15 14:46:54
+- 0264/Un.08/PPKES/08/2026 (Ada 3 data)
+   => ID: 207 | Nama: Natasya Anasty | Dibuat: 2026-08-15 11:22:44
+   => ID: 216 | Nama: Ghina Nadhifah | Dibuat: 2026-08-15 11:27:12
+   => ID: 357 | Nama: ASKAR MAUSITA | Dibuat: 2026-08-15 14:47:42
+- 0413/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 214 | Nama: Rahmat Hidayat | Dibuat: 2026-08-15 11:26:45
+   => ID: 222 | Nama: Muhammad Riyan Arifin | Dibuat: 2026-08-15 11:31:14
+- 0265/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 221 | Nama: Fifta Afwaza | Dibuat: 2026-08-15 11:30:15
+   => ID: 362 | Nama: Aziz Furqan Ramadhan | Dibuat: 2026-08-15 14:50:03
+- 0266/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 227 | Nama: Najila Fahira | Dibuat: 2026-08-15 11:32:57
+   => ID: 363 | Nama: Ulfi Alfiatinur | Dibuat: 2026-08-15 14:50:48
+- 0267/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 231 | Nama: Lisa Anggriani | Dibuat: 2026-08-15 11:35:04
+   => ID: 368 | Nama: Amanda Syafira | Dibuat: 2026-08-15 14:53:14
+- 0268/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 234 | Nama: Lusi Ernawati | Dibuat: 2026-08-15 11:37:12
+   => ID: 367 | Nama: Rahmat Syahputra | Dibuat: 2026-08-15 14:53:12
+- 0269/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 236 | Nama: Annesa Tsazkeeya | Dibuat: 2026-08-15 11:39:29
+   => ID: 374 | Nama: Alifah Zahra | Dibuat: 2026-08-15 14:56:43
+- 0270/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 240 | Nama: Ghina Tarisa | Dibuat: 2026-08-15 11:41:46
+   => ID: 375 | Nama: Asmaul Husna | Dibuat: 2026-08-15 14:57:11
+- 0271/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 243 | Nama: Nasila Bilbina | Dibuat: 2026-08-15 11:44:24
+   => ID: 381 | Nama: Yudira Almuawwizata | Dibuat: 2026-08-15 15:00:05
+- 0272/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 249 | Nama: Irma Elyana | Dibuat: 2026-08-15 11:46:42
+   => ID: 379 | Nama: Muhammad Rusdi | Dibuat: 2026-08-15 14:59:42
+- 0273/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 255 | Nama: Putri Zahra | Dibuat: 2026-08-15 11:49:28
+   => ID: 388 | Nama: REZEKY AL-FAZRY | Dibuat: 2026-08-15 15:04:21
+- 0274/Un.08/PPKES/08/2026 (Ada 3 data)
+   => ID: 260 | Nama: M. Zahrul Fuadi | Dibuat: 2026-08-15 11:52:07
+   => ID: 261 | Nama: M. Zahrul Fuadi | Dibuat: 2026-08-15 11:52:08
+   => ID: 385 | Nama: Nailul Authati | Dibuat: 2026-08-15 15:02:59
+- 0378/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 289 | Nama: AJRATUL SARAHA | Dibuat: 2026-08-15 13:50:37
+   => ID: 290 | Nama: Muhammad Akhyar Zul Aqli | Dibuat: 2026-08-15 13:57:19
+- 0275/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 300 | Nama: Raisa Azzahra | Dibuat: 2026-08-15 14:15:56
+   => ID: 395 | Nama: Uswatun Hasanah | Dibuat: 2026-08-15 15:07:03
+- 0276/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 307 | Nama: Alya Kaisara | Dibuat: 2026-08-15 14:20:07
+   => ID: 391 | Nama: Fairuz Humaira | Dibuat: 2026-08-15 15:06:01
+- 0289/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 370 | Nama: Muhammad Syarif | Dibuat: 2026-08-15 14:54:32
+   => ID: 387 | Nama: Shaafiyatul Asiyah | Dibuat: 2026-08-15 15:03:44
+- 0290/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 378 | Nama: Arif Maulana | Dibuat: 2026-08-15 14:59:18
+   => ID: 393 | Nama: Nasrul | Dibuat: 2026-08-15 15:07:00
+- 0665/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 406 | Nama: Zarwal | Dibuat: 2026-08-15 15:14:01
+   => ID: 413 | Nama: Muhammad Alkausar | Dibuat: 2026-08-15 15:16:59
+- 0296/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 435 | Nama: Ridha Pratama | Dibuat: 2026-08-15 15:28:12
+   => ID: 441 | Nama: Mawar Fitriani | Dibuat: 2026-08-15 15:32:15
+- 0306/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 504 | Nama: Raihan Saldi | Dibuat: 2026-08-15 16:07:42
+   => ID: 510 | Nama: Nuraini Havillah Syadi | Dibuat: 2026-08-15 16:10:40
+- 0778/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 524 | Nama: Zuimahendra | Dibuat: 2026-08-15 16:18:01
+   => ID: 568 | Nama: Syakira Huniva | Dibuat: 2026-08-16 08:58:15
+- 0779/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 531 | Nama: Uswatul Hasanah | Dibuat: 2026-08-15 16:22:22
+   => ID: 570 | Nama: Intan Az-zura | Dibuat: 2026-08-16 09:00:48
+- 0780/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 536 | Nama: Salwatun Ahzan | Dibuat: 2026-08-15 16:24:36
+   => ID: 574 | Nama: Szafran Amily | Dibuat: 2026-08-16 09:05:15
+- 0781/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 542 | Nama: Lia Dwi Almira | Dibuat: 2026-08-15 16:27:27
+   => ID: 575 | Nama: Dara Shafira | Dibuat: 2026-08-16 09:07:09
+- 0919/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 621 | Nama: Ulfa Hidayati | Dibuat: 2026-08-16 09:38:03
+   => ID: 629 | Nama: Siti Alifa Mulia | Dibuat: 2026-08-16 09:44:00
+- 1022/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 632 | Nama: Salwa Raihani | Dibuat: 2026-08-16 09:45:17
+   => ID: 869 | Nama: Miratul Ulla | Dibuat: 2026-08-16 14:33:35
+- 0987/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 660 | Nama: Latisha Rayya Rizkia | Dibuat: 2026-08-16 09:58:03
+   => ID: 666 | Nama: Dhiya Mahiye | Dibuat: 2026-08-16 10:01:17
+- 0937/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 732 | Nama: Siti Fadila | Dibuat: 2026-08-16 10:33:22
+   => ID: 737 | Nama: Salsabila Ersa | Dibuat: 2026-08-16 10:35:32
+- 0938/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 744 | Nama: Fina Nailatul Izzah | Dibuat: 2026-08-16 10:37:41
+   => ID: 748 | Nama: Mifta Khairiah | Dibuat: 2026-08-16 10:39:32
+- 0847/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 808 | Nama: Maulia Fitri | Dibuat: 2026-08-16 11:09:33
+   => ID: 836 | Nama: Aicha | Dibuat: 2026-08-16 14:17:42
+- 1344/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 895 | Nama: Gania Karin Angkat | Dibuat: 2026-08-16 14:43:51
+   => ID: 901 | Nama: Mirwa Safira | Dibuat: 2026-08-16 14:45:31
+- 1347/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 913 | Nama: Nawra Syifa Nazaya | Dibuat: 2026-08-16 14:50:43
+   => ID: 1116 | Nama: Rusmiati | Dibuat: 2026-08-17 09:14:28
+- 1185/Un.08/PPKES/08/202 (Ada 2 data)
+   => ID: 914 | Nama: Cici Nurhidaya | Dibuat: 2026-08-16 14:51:12
+   => ID: 1111 | Nama: Teuku Arief Moenawar | Dibuat: 2026-08-17 08:29:52
+- 1348/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 917 | Nama: Nurbasari | Dibuat: 2026-08-16 14:52:21
+   => ID: 1117 | Nama: Nadia Balqis | Dibuat: 2026-08-17 09:16:45
+- 1349/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 920 | Nama: Muhammad Hawwaz Aqif | Dibuat: 2026-08-16 14:53:49
+   => ID: 1120 | Nama: Anggina | Dibuat: 2026-08-17 09:18:53
+- 1350/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 922 | Nama: Rihana Zarhas | Dibuat: 2026-08-16 14:55:09
+   => ID: 1124 | Nama: Qurratul A'yun | Dibuat: 2026-08-17 09:21:18
+- 1351/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 927 | Nama: Sutiina | Dibuat: 2026-08-16 14:57:06
+   => ID: 1146 | Nama: Athillah Khairusyifa | Dibuat: 2026-08-17 09:30:46
+- 1352/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 930 | Nama: Bensu Maharani | Dibuat: 2026-08-16 14:59:43
+   => ID: 1137 | Nama: Muhammad Faiz Nubli | Dibuat: 2026-08-17 09:27:02
+- 1353/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 942 | Nama: Ayunda Larasati | Dibuat: 2026-08-16 15:06:28
+   => ID: 1170 | Nama: Nadia Safira | Dibuat: 2026-08-17 09:46:51
+- 1355/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 945 | Nama: Lia Hasanah | Dibuat: 2026-08-16 15:08:22
+   => ID: 1176 | Nama: Umratul Munira | Dibuat: 2026-08-17 09:49:34
+- 1356/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 951 | Nama: Cut Annisa Fitri | Dibuat: 2026-08-16 15:10:01
+   => ID: 1182 | Nama: Muhammad Hanif Arrahman | Dibuat: 2026-08-17 09:51:56
+- 1357/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 955 | Nama: Haura Salsabila | Dibuat: 2026-08-16 15:11:29
+   => ID: 1187 | Nama: Hauratul Jannah | Dibuat: 2026-08-17 09:54:00
+- 1358/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 959 | Nama: Nurussyifa | Dibuat: 2026-08-16 15:13:09
+   => ID: 1194 | Nama: Sela Keisa Apriani | Dibuat: 2026-08-17 09:56:16
+- 1359/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 964 | Nama: Risma | Dibuat: 2026-08-16 15:15:18
+   => ID: 1199 | Nama: Winda Hastifa | Dibuat: 2026-08-17 09:58:50
+- 1360/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 968 | Nama: Atika Hanifa | Dibuat: 2026-08-16 15:16:53
+   => ID: 1203 | Nama: Kaila An Naza | Dibuat: 2026-08-17 10:01:02
+- 1361/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 977 | Nama: Atirah Balqisah | Dibuat: 2026-08-16 15:21:18
+   => ID: 1209 | Nama: Nazwa Salsabila | Dibuat: 2026-08-17 10:03:58
+- 1362/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 983 | Nama: Fanisya Septia Ramazani | Dibuat: 2026-08-16 15:22:55
+   => ID: 1214 | Nama: Rahmat Danil | Dibuat: 2026-08-17 10:06:16
+- 1363/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 993 | Nama: Muzayyanah Arrasyid | Dibuat: 2026-08-16 15:27:21
+   => ID: 1222 | Nama: Rayhana Zakiya | Dibuat: 2026-08-17 10:09:14
+- 1364/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 997 | Nama: Raisa Ihsan | Dibuat: 2026-08-16 15:29:15
+   => ID: 1228 | Nama: Ridho Satria | Dibuat: 2026-08-17 10:11:13
+- 1365/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1000 | Nama: Fanny Amirah | Dibuat: 2026-08-16 15:30:41
+   => ID: 1240 | Nama: M faiz al-mursyid hafiq | Dibuat: 2026-08-17 10:18:08
+- 1308/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1002 | Nama: Mailisa Fira | Dibuat: 2026-08-16 15:31:35
+   => ID: 1011 | Nama: Meysarah | Dibuat: 2026-08-16 15:35:23
+- 1366/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1007 | Nama: Niswa Fazila Al Usmani | Dibuat: 2026-08-16 15:33:33
+   => ID: 1246 | Nama: Fatiya Azzuhra | Dibuat: 2026-08-17 10:19:49
+- 1367/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1010 | Nama: Annisa Thaharah Jais | Dibuat: 2026-08-16 15:35:13
+   => ID: 1250 | Nama: Siti Humairah Muzalifah | Dibuat: 2026-08-17 10:22:03
+- 1368/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1015 | Nama: Qurroturrahma Panjaitan | Dibuat: 2026-08-16 15:37:28
+   => ID: 1257 | Nama: Wirja Nur Hakim | Dibuat: 2026-08-17 10:24:51
+- 1369/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1017 | Nama: Fasya Kawiya | Dibuat: 2026-08-16 15:39:05
+   => ID: 1265 | Nama: Naina Misratun Riska | Dibuat: 2026-08-17 10:27:37
+- 1370/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1021 | Nama: Sarifah Aini Al-Zuhra | Dibuat: 2026-08-16 15:40:42
+   => ID: 1271 | Nama: Anggye Anggrainy | Dibuat: 2026-08-17 10:30:24
+- 1253/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1024 | Nama: Imra Atush Shalihah | Dibuat: 2026-08-16 15:41:36
+   => ID: 1033 | Nama: Hidayatul Mahfud | Dibuat: 2026-08-16 15:46:39
+- 1371/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1026 | Nama: Suci Nasinalia | Dibuat: 2026-08-16 15:42:37
+   => ID: 1274 | Nama: Haura Fatin Hasanuddin | Dibuat: 2026-08-17 10:32:37
+- 1372/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1030 | Nama: Naila Chulaisa | Dibuat: 2026-08-16 15:45:22
+   => ID: 1285 | Nama: Syeratun Zahraini | Dibuat: 2026-08-17 10:37:39
+- 1373/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1035 | Nama: Maira Falsiha | Dibuat: 2026-08-16 15:47:43
+   => ID: 1295 | Nama: Muhammad Fawwaz Al Hafiz | Dibuat: 2026-08-17 10:42:21
+- 1374/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1038 | Nama: Niswatun | Dibuat: 2026-08-16 15:49:30
+   => ID: 1303 | Nama: Ullya Kasmiranza | Dibuat: 2026-08-17 10:45:38
+- 1375/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1040 | Nama: Nur Salsabila | Dibuat: 2026-08-16 15:51:00
+   => ID: 1311 | Nama: Nuzulia | Dibuat: 2026-08-17 10:49:16
+- 1376/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1045 | Nama: Refa Meylani | Dibuat: 2026-08-16 15:53:13
+   => ID: 1317 | Nama: Ghina Azzahrawani | Dibuat: 2026-08-17 10:51:10
+- 1377/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1049 | Nama: Alfira Farlini | Dibuat: 2026-08-16 15:54:42
+   => ID: 1322 | Nama: Muhammad Nazir | Dibuat: 2026-08-17 10:53:22
+- 1378/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1053 | Nama: Dinda Hardiana Lestari | Dibuat: 2026-08-16 15:56:19
+   => ID: 1327 | Nama: Elpika Tri Andini | Dibuat: 2026-08-17 10:56:22
+- 1379/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1062 | Nama: Sazqia Amanda | Dibuat: 2026-08-16 16:00:49
+   => ID: 1331 | Nama: Zalfa Syahirah | Dibuat: 2026-08-17 10:58:25
+- 1380/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1067 | Nama: Safiatuddina | Dibuat: 2026-08-16 16:02:23
+   => ID: 1335 | Nama: Adha Yoga Pratama | Dibuat: 2026-08-17 11:00:51
+- 1381/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1072 | Nama: Nayra | Dibuat: 2026-08-16 16:04:04
+   => ID: 1343 | Nama: Fika Ikmalina | Dibuat: 2026-08-17 11:02:48
+- 1382/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1075 | Nama: Safwan | Dibuat: 2026-08-16 16:05:30
+   => ID: 1349 | Nama: Khairiyatunnisa | Dibuat: 2026-08-17 11:05:31
+- 1383/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1081 | Nama: Alif Falah | Dibuat: 2026-08-16 16:08:59
+   => ID: 1354 | Nama: Rachil Raysa | Dibuat: 2026-08-17 11:07:35
+- 1384/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1086 | Nama: Ana Tasya Aulia | Dibuat: 2026-08-16 16:10:43
+   => ID: 1359 | Nama: Fitra Aulia | Dibuat: 2026-08-17 11:09:35
+- 1186/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1112 | Nama: Muhammad Alif Fakhriadi | Dibuat: 2026-08-17 08:30:02
+   => ID: 1390 | Nama: Rifa Uchrowi | Dibuat: 2026-08-17 11:30:17
+- 1187/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1113 | Nama: Iqbal Maula Dani | Dibuat: 2026-08-17 08:33:26
+   => ID: 1392 | Nama: M.RADIF SAYENASAYUTI | Dibuat: 2026-08-17 11:34:17
+- 1560/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1183 | Nama: Nazila Rahmah | Dibuat: 2026-08-17 09:52:09
+   => ID: 1444 | Nama: Muhammad Hafiz | Dibuat: 2026-08-17 14:53:56
+- 1568/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1236 | Nama: Shabira Rahima Friciya | Dibuat: 2026-08-17 10:16:05
+   => ID: 1241 | Nama: Iqwan Faturrahman | Dibuat: 2026-08-17 10:18:37
+- 1630/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1273 | Nama: Dedi Alfa Salam | Dibuat: 2026-08-17 10:32:08
+   => ID: 1278 | Nama: Irwandi | Dibuat: 2026-08-17 10:34:52
+- 1586/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1334 | Nama: Ade Reza | Dibuat: 2026-08-17 10:59:51
+   => ID: 1340 | Nama: Muhammad Fauzan | Dibuat: 2026-08-17 11:02:28
+- 1587/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1348 | Nama: M. Fairuzabadi | Dibuat: 2026-08-17 11:05:22
+   => ID: 1356 | Nama: Muhammad Firdaus Al Farizi | Dibuat: 2026-08-17 11:07:48
+- 2026/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1428 | Nama: Putra Al Khair | Dibuat: 2026-08-17 14:45:18
+   => ID: 1429 | Nama: Afdhalul Ramadhan | Dibuat: 2026-08-17 14:46:00
+- 2027/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1431 | Nama: M. Farandi Alariq | Dibuat: 2026-08-17 14:46:54
+   => ID: 1437 | Nama: Romia Hidayah | Dibuat: 2026-08-17 14:50:47
+- 2028/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1434 | Nama: Muhammad Azka Hidayat | Dibuat: 2026-08-17 14:48:34
+   => ID: 1442 | Nama: Muhammad Alzaid | Dibuat: 2026-08-17 14:53:16
+- 2029/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1436 | Nama: Khalilul Anwar | Dibuat: 2026-08-17 14:50:30
+   => ID: 1457 | Nama: Afdhal Fakhri | Dibuat: 2026-08-17 15:04:59
+- 2030/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1440 | Nama: Salman Alfarisi | Dibuat: 2026-08-17 14:52:09
+   => ID: 1471 | Nama: Iklam Al Huda | Dibuat: 2026-08-17 15:15:03
+- 2031/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1443 | Nama: T.M. Rafi Al Khuzari | Dibuat: 2026-08-17 14:53:55
+   => ID: 1475 | Nama: Nazyrsyah Sultannul Hanif | Dibuat: 2026-08-17 15:17:32
+- 2032/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1447 | Nama: Najwa Amalya | Dibuat: 2026-08-17 14:56:34
+   => ID: 1480 | Nama: Azkal Fairuz | Dibuat: 2026-08-17 15:19:14
+- 2033/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1450 | Nama: Nashywa Adela | Dibuat: 2026-08-17 14:57:54
+   => ID: 1486 | Nama: Reta Hasny Pashadzanyo | Dibuat: 2026-08-17 15:22:54
+- 2034/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1452 | Nama: Noorisha Keyla | Dibuat: 2026-08-17 14:59:54
+   => ID: 1493 | Nama: Achmadsyah Mudzaky | Dibuat: 2026-08-17 15:25:55
+- 2035/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1453 | Nama: Muzi Burrahman | Dibuat: 2026-08-17 15:01:17
+   => ID: 1497 | Nama: Muhammad Faiz Fadhila | Dibuat: 2026-08-17 15:27:37
+- 2036/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1454 | Nama: Putri Annisa | Dibuat: 2026-08-17 15:02:46
+   => ID: 1504 | Nama: Zahara Monalisa | Dibuat: 2026-08-17 15:31:47
+- 2037/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1458 | Nama: Zahara Junina Luthfiyah | Dibuat: 2026-08-17 15:05:17
+   => ID: 1512 | Nama: Muhammad Ghufran Riefky | Dibuat: 2026-08-17 15:35:29
+- 2038/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1461 | Nama: Syarafi Fata | Dibuat: 2026-08-17 15:08:52
+   => ID: 1517 | Nama: Yoshi Madlizayyan | Dibuat: 2026-08-17 15:37:46
+- 2039/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1464 | Nama: Kaila Rahma | Dibuat: 2026-08-17 15:10:20
+   => ID: 1522 | Nama: Reyhan Pratama | Dibuat: 2026-08-17 15:39:17
+- 2040/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1465 | Nama: Zahwa Assyifa | Dibuat: 2026-08-17 15:12:32
+   => ID: 1526 | Nama: Izza Muzaiyana | Dibuat: 2026-08-17 15:42:52
+- 2041/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1468 | Nama: Maulana Ashari Akbar | Dibuat: 2026-08-17 15:14:01
+   => ID: 1531 | Nama: Zahraal Kamila | Dibuat: 2026-08-17 15:45:49
+- 1973/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1470 | Nama: Habiburrahman El Miswary | Dibuat: 2026-08-17 15:14:40
+   => ID: 1539 | Nama: SYIFAATUL KAUTSARA | Dibuat: 2026-08-17 15:49:16
+- 2042/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1472 | Nama: Attar Putra Feyra | Dibuat: 2026-08-17 15:15:16
+   => ID: 1538 | Nama: Cut Nailul Muna | Dibuat: 2026-08-17 15:48:12
+- 2043/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1474 | Nama: Raisya Amalira | Dibuat: 2026-08-17 15:16:58
+   => ID: 1542 | Nama: Najwa Aminatuzzahra | Dibuat: 2026-08-17 15:50:15
+- 1974/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1476 | Nama: M. Husni Fahmi | Dibuat: 2026-08-17 15:17:43
+   => ID: 1546 | Nama: ANDRE KUSUMA | Dibuat: 2026-08-17 15:51:33
+- 2044/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1477 | Nama: Nora Sufiana | Dibuat: 2026-08-17 15:18:08
+   => ID: 1548 | Nama: Zaskia Ulva Maulidar | Dibuat: 2026-08-17 15:52:36
+- 2045/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1481 | Nama: Fatra Muchlisin | Dibuat: 2026-08-17 15:19:57
+   => ID: 1552 | Nama: Putri Malahayati | Dibuat: 2026-08-17 15:54:14
+- 2046/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1484 | Nama: Putri Soleha | Dibuat: 2026-08-17 15:21:16
+   => ID: 1557 | Nama: Mizanul Abrar | Dibuat: 2026-08-17 15:55:57
+- 1975/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1485 | Nama: Nissa Ul Hikmah | Dibuat: 2026-08-17 15:22:22
+   => ID: 1553 | Nama: HANUM HUMAIRAH | Dibuat: 2026-08-17 15:54:48
+- 2047/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1489 | Nama: Risna Maulidia | Dibuat: 2026-08-17 15:24:31
+   => ID: 1562 | Nama: Muhammad Naufal | Dibuat: 2026-08-17 15:57:43
+- 1976/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1491 | Nama: M. Afgan Bhayangkara | Dibuat: 2026-08-17 15:24:50
+   => ID: 1559 | Nama: SYARIFAH ARISSA | Dibuat: 2026-08-17 15:56:49
+- 2048/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1494 | Nama: Najwa Alkhaira | Dibuat: 2026-08-17 15:26:01
+   => ID: 1569 | Nama: Teuku Muhammad Aulia Arief | Dibuat: 2026-08-17 16:00:21
+- 1977/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1495 | Nama: Muhammad Walad Al Maliki | Dibuat: 2026-08-17 15:27:13
+   => ID: 1566 | Nama: MISYA ZUHRA | Dibuat: 2026-08-17 15:59:04
+- 2049/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1496 | Nama: Raudhatun Nufus | Dibuat: 2026-08-17 15:27:25
+   => ID: 1575 | Nama: Dina Shafia | Dibuat: 2026-08-17 16:02:37
+- 2050/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1500 | Nama: Zahra Huwaini Adha | Dibuat: 2026-08-17 15:28:37
+   => ID: 1578 | Nama: Ryan Nugraha | Dibuat: 2026-08-17 16:05:07
+- 2051/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1501 | Nama: Zhafira Ulfa Jaid | Dibuat: 2026-08-17 15:30:14
+   => ID: 1583 | Nama: Rizka Khalila | Dibuat: 2026-08-17 16:07:16
+- 1978/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1503 | Nama: Ulfi Amelia | Dibuat: 2026-08-17 15:30:55
+   => ID: 1570 | Nama: NAHLA ALIFA JASMAN | Dibuat: 2026-08-17 16:00:50
+- 2052/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1505 | Nama: Muhammad Faresyi | Dibuat: 2026-08-17 15:31:51
+   => ID: 1588 | Nama: Humaira | Dibuat: 2026-08-17 16:09:15
+- 2053/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1507 | Nama: Aulia Fathurrahman | Dibuat: 2026-08-17 15:33:08
+   => ID: 1594 | Nama: Ziaul Paradisa | Dibuat: 2026-08-17 16:11:15
+- 1979/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1509 | Nama: Uswatun Hasanah | Dibuat: 2026-08-17 15:33:32
+   => ID: 1581 | Nama: SITI HIDAYAH RAFIL | Dibuat: 2026-08-17 16:05:49
+- 2054/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1510 | Nama: Khairul Imam | Dibuat: 2026-08-17 15:34:15
+   => ID: 1600 | Nama: Muhammad Sulthan Masyhuda | Dibuat: 2026-08-17 16:13:17
+- 2055/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1513 | Nama: Muhammad Al Fatahillah | Dibuat: 2026-08-17 15:35:37
+   => ID: 1607 | Nama: Zahratul Humaira Jaid | Dibuat: 2026-08-17 16:15:52
+- 1980/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1515 | Nama: Sipa Ruhamah | Dibuat: 2026-08-17 15:36:59
+   => ID: 1587 | Nama: NUR RIDA AINI DAMANIK | Dibuat: 2026-08-17 16:08:32
+- 2056/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1516 | Nama: Zahra Syifa | Dibuat: 2026-08-17 15:37:22
+   => ID: 1614 | Nama: Khairussyifa Mudhiyah | Dibuat: 2026-08-17 16:18:14
+- 2057/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1518 | Nama: Ulva Jazira Ziqra | Dibuat: 2026-08-17 15:38:32
+   => ID: 1620 | Nama: Putri Masriyati | Dibuat: 2026-08-17 16:20:14
+- 2058/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1523 | Nama: Naswa Mawaddah | Dibuat: 2026-08-17 15:39:51
+   => ID: 1627 | Nama: M. Azanni Al - Jausa | Dibuat: 2026-08-17 16:22:47
+- 1981/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1524 | Nama: Izza  Muzaiyana | Dibuat: 2026-08-17 15:40:09
+   => ID: 1595 | Nama: M. ANWARUZZAHIDIN | Dibuat: 2026-08-17 16:11:45
+- 1982/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1527 | Nama: Fahrezi Maulana | Dibuat: 2026-08-17 15:43:08
+   => ID: 1602 | Nama: NADYA MAULATUL NASRAH | Dibuat: 2026-08-17 16:14:04
+- 2059/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1528 | Nama: Firda Maisuri | Dibuat: 2026-08-17 15:43:41
+   => ID: 1630 | Nama: Muhammad Fatih Zaki | Dibuat: 2026-08-17 16:24:39
+- 2060/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1530 | Nama: Icha Rayyan Dilla | Dibuat: 2026-08-17 15:44:54
+   => ID: 1636 | Nama: M. Habib Ramadhan | Dibuat: 2026-08-17 16:26:43
+- 1983/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1533 | Nama: Cut Atiqah Khumairah | Dibuat: 2026-08-17 15:46:54
+   => ID: 1609 | Nama: AURALIA BALQIS | Dibuat: 2026-08-17 16:16:54
+- 2061/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1535 | Nama: Naura Aufa | Dibuat: 2026-08-17 15:47:14
+   => ID: 1641 | Nama: Muhammad Fahri | Dibuat: 2026-08-17 16:27:58
+- 2062/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1540 | Nama: Saiyidatul A'fifah | Dibuat: 2026-08-17 15:49:56
+   => ID: 1648 | Nama: Indi Sahwal Sarina | Dibuat: 2026-08-17 16:30:27
+- 1984/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1541 | Nama: Rezqina Cahya Ningrum | Dibuat: 2026-08-17 15:50:00
+   => ID: 1616 | Nama: AMILA SHOLEHA | Dibuat: 2026-08-17 16:19:20
+- 2063/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1545 | Nama: Fardan Zhuhri | Dibuat: 2026-08-17 15:51:24
+   => ID: 1652 | Nama: Aidil Munadi | Dibuat: 2026-08-17 16:31:47
+- 1985/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1547 | Nama: Syifa Khairani | Dibuat: 2026-08-17 15:52:31
+   => ID: 1624 | Nama: WIRANDA PUTRI INSANI | Dibuat: 2026-08-17 16:22:19
+- 2064/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1550 | Nama: Nahwa Aurel Salsabila | Dibuat: 2026-08-17 15:53:18
+   => ID: 1656 | Nama: Rihhadatul Aisy | Dibuat: 2026-08-17 16:33:40
+- 2065/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1554 | Nama: Fahri Maulana | Dibuat: 2026-08-17 15:54:50
+   => ID: 1662 | Nama: Maulidya Safitri | Dibuat: 2026-08-17 16:35:52
+- 1987/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1555 | Nama: Farah Syahira | Dibuat: 2026-08-17 15:55:42
+   => ID: 1637 | Nama: HAFIDH WALIDY | Dibuat: 2026-08-17 16:26:49
+- 2066/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1558 | Nama: M. Septian Rahmadana | Dibuat: 2026-08-17 15:56:10
+   => ID: 1665 | Nama: Febriadi | Dibuat: 2026-08-17 16:37:34
+- 1988/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1564 | Nama: Wirdatul Ulfirma | Dibuat: 2026-08-17 15:58:29
+   => ID: 1644 | Nama: REZA ANANDA | Dibuat: 2026-08-17 16:28:57
+- 1989/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1572 | Nama: Muhammad Zikri | Dibuat: 2026-08-17 16:01:04
+   => ID: 1650 | Nama: MUAMAR QADHAFI | Dibuat: 2026-08-17 16:31:02
+- 1990/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1584 | Nama: Nafisah Mahirah | Dibuat: 2026-08-17 16:07:19
+   => ID: 1659 | Nama: MHD. JIBRIL ALRASYID | Dibuat: 2026-08-17 16:34:11
+- 1991/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1590 | Nama: Fathur Rahman Yusuf | Dibuat: 2026-08-17 16:09:47
+   => ID: 1670 | Nama: MUHAMMAR KHADAFI | Dibuat: 2026-08-17 16:39:20
+- 2000/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1606 | Nama: Izzah Haziqah | Dibuat: 2026-08-17 16:15:45
+   => ID: 1654 | Nama: Hafidhul Muna | Dibuat: 2026-08-17 16:32:50
+- 2001/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1610 | Nama: Luthfi Asyir | Dibuat: 2026-08-17 16:16:57
+   => ID: 1660 | Nama: Abdil Khaliq Maulana | Dibuat: 2026-08-17 16:35:13
+- 2002/Un.08/PPKES/08/2026 (Ada 2 data)
+   => ID: 1613 | Nama: Noerdin Beruh | Dibuat: 2026-08-17 16:18:13
+   => ID: 1666 | Nama: Arafah Nazlya | Dibuat: 2026-08-17 16:37:49
