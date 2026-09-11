@@ -40,7 +40,14 @@
                 <tbody class="bg-white divide-y divide-gray-100">
                     @forelse ($users as $u)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{{ $u->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 flex items-center gap-2">
+                                <span>{{ $u->name }}</span>
+                                @if($u->id === Auth::id())
+                                    <span class="px-2 py-0.5 inline-flex text-[10px] font-bold tracking-wider rounded bg-amber-100 text-amber-800 border border-amber-200 uppercase">
+                                        Anda
+                                    </span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $u->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @if($u->role === 'admin')

@@ -66,29 +66,36 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'password' => 'nullable|string|min:8|confirmed',
-            'role' => ['required', Rule::in(['admin', 'operator'])],
-            'is_active' => 'sometimes|boolean',
-        ]);
+        $isSelf = ($user->id === Auth::id());
 
-        $newIsActive = $request->has('is_active') ? $request->boolean('is_active') : $user->is_active;
-        $newRole = $validated['role'];
-
-        // Guard 1: Cannot self-deactivate or self-demote
-        if ($user->id === Auth::id()) {
-            if (!$newIsActive) {
-                return back()->withErrors(['is_active' => 'Anda tidak dapat menonaktifkan akun Anda sendiri.'])->withInput();
+        // Guard 1: Self-role change and self-deactivation are strictly forbidden
+        if ($isSelf) {
+            if ($request->has('role') && $request->role !== $user->role) {
+                return back()->withErrors(['role' => 'Anda tidak dapat mengubah role Anda sendiri.'])->withInput();
             }
-            if ($newRole !== 'admin') {
-                return back()->withErrors(['role' => 'Anda tidak dapat mengubah role Anda sendiri menjadi operator.'])->withInput();
+            if ($request->has('is_active') && !$request->boolean('is_active')) {
+                return back()->withErrors(['is_active' => 'Anda tidak dapat menonaktifkan akun Anda sendiri.'])->withInput();
             }
         }
 
-        // Guard 2: Ensure at least one active admin remains in system
-        if ($user->role === 'admin' && $user->is_active) {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'password' => 'nullable|string|min:8|confirmed',
+        ];
+
+        if (!$isSelf) {
+            $rules['role'] = ['required', Rule::in(['admin', 'operator'])];
+            $rules['is_active'] = 'sometimes|boolean';
+        }
+
+        $validated = $request->validate($rules);
+
+        $newIsActive = $isSelf ? true : ($request->has('is_active') ? $request->boolean('is_active') : $user->is_active);
+        $newRole = $isSelf ? $user->role : ($validated['role'] ?? $user->role);
+
+        // Guard 2: Ensure at least one active admin remains in system when editing OTHER admins
+        if (!$isSelf && $user->role === 'admin' && $user->is_active) {
             if ($newRole !== 'admin' || !$newIsActive) {
                 $otherActiveAdmins = User::where('role', 'admin')
                     ->where('is_active', true)

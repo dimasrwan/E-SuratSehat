@@ -31,11 +31,10 @@
 
                     <div>
                         <label for="dokter_nama" class="block mb-2 text-sm font-medium text-gray-700">Dokter Pemeriksa</label>
-                        <select name="dokter_nama" id="dokter_nama" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150" onchange="updateDokterNip()">
-                            <option value="">-- Pilih Dokter --</option>
-                            <option value="dr. Nadia Fajri, M.K.M" data-nip="198006032010012012" {{ old('dokter_nama') == 'dr. Nadia Fajri, M.K.M' ? 'selected' : '' }}>dr. Nadia Fajri, M.K.M</option>
-                            <option value="dr. Desminawati" data-nip="198002062010012007" {{ old('dokter_nama', 'dr. Desminawati') == 'dr. Desminawati' ? 'selected' : '' }}>dr. Desminawati</option>
-                        </select>
+                        <x-form-select name="dokter_nama" id="dokter_nama" :value="old('dokter_nama', 'dr. Desminawati')" onchange="updateDokterNip()" placeholder="-- Pilih Dokter --" :options="[
+                            'dr. Nadia Fajri, M.K.M' => ['label' => 'dr. Nadia Fajri, M.K.M', 'value' => 'dr. Nadia Fajri, M.K.M', 'extra' => ['nip' => '198006032010012012']],
+                            'dr. Desminawati' => ['label' => 'dr. Desminawati', 'value' => 'dr. Desminawati', 'extra' => ['nip' => '198002062010012007']]
+                        ]" />
                         <input type="hidden" name="dokter_nip" id="dokter_nip" value="{{ old('dokter_nip', '198002062010012007') }}">
                     </div>
 
@@ -69,11 +68,10 @@
                     
                     <div>
                         <label for="jenis_kelamin" class="block mb-2 text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" id="jenis_kelamin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
-                            <option value="">Pilih...</option>
-                            <option value="Laki-Laki" {{ old('jenis_kelamin') == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
-                            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                        </select>
+                        <x-form-select name="jenis_kelamin" id="jenis_kelamin" :value="old('jenis_kelamin')" placeholder="Pilih..." :options="[
+                            'Laki-Laki' => 'Laki-Laki',
+                            'Perempuan' => 'Perempuan'
+                        ]" />
                     </div>
 
                     <div>
@@ -83,18 +81,17 @@
                     
                     <div>
                         <label for="fakultas" class="block mb-2 text-sm font-medium text-gray-700">Fakultas</label>
-                        <select name="fakultas" id="fakultas" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
-                            <option value="">Pilih Fakultas...</option>
-                            <option value="Fakultas Tarbiyah dan Keguruan" {{ old('fakultas') == 'Fakultas Tarbiyah dan Keguruan' ? 'selected' : '' }}>Fakultas Tarbiyah dan Keguruan</option>
-                            <option value="Fakultas Syariah dan Hukum" {{ old('fakultas') == 'Fakultas Syariah dan Hukum' ? 'selected' : '' }}>Fakultas Syariah dan Hukum</option>
-                            <option value="Fakultas Dakwah dan Komunikasi" {{ old('fakultas') == 'Fakultas Dakwah dan Komunikasi' ? 'selected' : '' }}>Fakultas Dakwah dan Komunikasi</option>
-                            <option value="Fakultas Ushuluddin dan Filsafat" {{ old('fakultas') == 'Fakultas Ushuluddin dan Filsafat' ? 'selected' : '' }}>Fakultas Ushuluddin dan Filsafat</option>
-                            <option value="Fakultas Adab dan Humaniora" {{ old('fakultas') == 'Fakultas Adab dan Humaniora' ? 'selected' : '' }}>Fakultas Adab dan Humaniora</option>
-                            <option value="Fakultas Ekonomi dan Bisnis Islam" {{ old('fakultas') == 'Fakultas Ekonomi dan Bisnis Islam' ? 'selected' : '' }}>Fakultas Ekonomi dan Bisnis Islam</option>
-                            <option value="Fakultas Sains dan Teknologi" {{ old('fakultas') == 'Fakultas Sains dan Teknologi' ? 'selected' : '' }}>Fakultas Sains dan Teknologi</option>
-                            <option value="Fakultas Psikologi" {{ old('fakultas') == 'Fakultas Psikologi' ? 'selected' : '' }}>Fakultas Psikologi</option>
-                            <option value="Fakultas Ilmu Sosial dan Ilmu Pemerintahan" {{ old('fakultas') == 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' ? 'selected' : '' }}>Fakultas Ilmu Sosial dan Ilmu Pemerintahan</option>
-                        </select>
+                        <x-form-select name="fakultas" id="fakultas" :value="old('fakultas')" placeholder="Pilih Fakultas..." :options="[
+                            'Fakultas Tarbiyah dan Keguruan' => 'Fakultas Tarbiyah dan Keguruan',
+                            'Fakultas Syariah dan Hukum' => 'Fakultas Syariah dan Hukum',
+                            'Fakultas Dakwah dan Komunikasi' => 'Fakultas Dakwah dan Komunikasi',
+                            'Fakultas Ushuluddin dan Filsafat' => 'Fakultas Ushuluddin dan Filsafat',
+                            'Fakultas Adab dan Humaniora' => 'Fakultas Adab dan Humaniora',
+                            'Fakultas Ekonomi dan Bisnis Islam' => 'Fakultas Ekonomi dan Bisnis Islam',
+                            'Fakultas Sains dan Teknologi' => 'Fakultas Sains dan Teknologi',
+                            'Fakultas Psikologi' => 'Fakultas Psikologi',
+                            'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' => 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
+                        ]" />
                     </div>
 
                     <div>
@@ -122,14 +119,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                     <div>
                         <label for="kesimpulan" class="block mb-2 text-sm font-bold text-emerald-900">Dinyatakan <span class="text-red-500">*</span></label>
-                        <select name="kesimpulan" id="kesimpulan" required class="bg-white border border-emerald-300 text-emerald-900 text-sm font-bold rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 shadow-sm transition duration-150">
-                            <option value="SEHAT DAN TIDAK BUTA WARNA" {{ old('kesimpulan') == 'SEHAT DAN TIDAK BUTA WARNA' ? 'selected' : '' }}>SEHAT DAN TIDAK BUTA WARNA</option>
-                            <option value="SEHAT DAN BUTA WARNA" {{ old('kesimpulan') == 'SEHAT DAN BUTA WARNA' ? 'selected' : '' }}>SEHAT DAN BUTA WARNA</option>
-                            <option value="SEHAT DAN BUTA WARNA PARSIAL" {{ old('kesimpulan') == 'SEHAT DAN BUTA WARNA PARSIAL' ? 'selected' : '' }}>SEHAT DAN BUTA WARNA PARSIAL</option>
-                            <option value="SEHAT" {{ old('kesimpulan') == 'SEHAT' ? 'selected' : '' }}>SEHAT</option>
-                            <option value="TIDAK SEHAT" {{ old('kesimpulan') == 'TIDAK SEHAT' ? 'selected' : '' }}>TIDAK SEHAT</option>
-                            <option value="TIDAK SEHAT DAN BUTA WARNA PARSIAL" {{ old('kesimpulan') == 'TIDAK SEHAT DAN BUTA WARNA PARSIAL' ? 'selected' : '' }}>TIDAK SEHAT DAN BUTA WARNA PARSIAL</option>
-                        </select>
+                        <x-form-select name="kesimpulan" id="kesimpulan" :value="old('kesimpulan', 'SEHAT DAN TIDAK BUTA WARNA')" required :options="[
+                            'SEHAT DAN TIDAK BUTA WARNA' => 'SEHAT DAN TIDAK BUTA WARNA',
+                            'SEHAT DAN BUTA WARNA' => 'SEHAT DAN BUTA WARNA',
+                            'SEHAT DAN BUTA WARNA PARSIAL' => 'SEHAT DAN BUTA WARNA PARSIAL',
+                            'SEHAT' => 'SEHAT',
+                            'TIDAK SEHAT' => 'TIDAK SEHAT',
+                            'TIDAK SEHAT DAN BUTA WARNA PARSIAL' => 'TIDAK SEHAT DAN BUTA WARNA PARSIAL'
+                        ]" />
                     </div>
                     <div>
                         <label for="keperluan" class="block mb-2 text-sm font-bold text-emerald-900">Keperluan</label>
@@ -167,11 +164,11 @@
                     </div>
                     <div>
                         <label for="buta_warna" class="block mb-2 text-sm font-medium text-gray-700">Buta Warna</label>
-                        <select name="buta_warna" id="buta_warna" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
-                            <option value="Tidak" {{ old('buta_warna', 'Tidak') == 'Tidak' ? 'selected' : '' }}>Tidak</option>
-                            <option value="Parsial" {{ old('buta_warna') == 'Parsial' ? 'selected' : '' }}>Parsial</option>
-                            <option value="Ya" {{ old('buta_warna') == 'Ya' ? 'selected' : '' }}>Ya</option>
-                        </select>
+                        <x-form-select name="buta_warna" id="buta_warna" :value="old('buta_warna', 'Tidak')" :options="[
+                            'Tidak' => 'Tidak',
+                            'Parsial' => 'Parsial',
+                            'Ya' => 'Ya'
+                        ]" />
                     </div>
                 </div>
             </div>
@@ -220,10 +217,13 @@
 @push('scripts')
 <script>
     function updateDokterNip() {
-        const select = document.getElementById('dokter_nama');
+        const input = document.getElementById('dokter_nama');
+        const wrapper = input ? input.closest('.custom-select-wrapper') : null;
+        const selectedOpt = wrapper ? wrapper.querySelector('.custom-select-option[aria-selected="true"]') : null;
         const nipInput = document.getElementById('dokter_nip');
-        const selectedOption = select.options[select.selectedIndex];
-        nipInput.value = selectedOption.getAttribute('data-nip') || '';
+        if (nipInput) {
+            nipInput.value = selectedOpt ? (selectedOpt.getAttribute('data-nip') || '') : '';
+        }
     }
 
     function calculateAge() {

@@ -212,12 +212,60 @@ class AdminUserManagementTest extends TestCase
         $response = $this->actingAs($this->admin)->put("/admin/users/{$this->admin->id}", [
             'name' => $this->admin->name,
             'email' => $this->admin->email,
-            'role' => 'admin',
             'is_active' => 0,
         ]);
 
         $response->assertSessionHasErrors('is_active');
         $this->assertTrue($this->admin->fresh()->is_active);
+    }
+
+    /** 13b. Admin cannot change their own role under any circumstances */
+    public function test_admin_cannot_change_their_own_role(): void
+    {
+        // Create second admin so sole-admin is not the reason for rejection
+        $secondAdmin = User::create([
+            'name' => 'Second Admin',
+            'email' => 'second_admin@test.com',
+            'password' => Hash::make('Password123!'),
+        ]);
+        $secondAdmin->role = 'admin';
+        $secondAdmin->is_active = true;
+        $secondAdmin->save();
+
+        $response = $this->actingAs($this->admin)->put("/admin/users/{$this->admin->id}", [
+            'name' => $this->admin->name,
+            'email' => $this->admin->email,
+            'role' => 'operator',
+        ]);
+
+        $response->assertSessionHasErrors('role');
+        $this->assertEquals('admin', $this->admin->fresh()->role);
+    }
+
+    /** 13c. Admin can change role and status of another user */
+    public function test_admin_can_change_role_and_status_of_another_user(): void
+    {
+        // Admin demotes operator to operator or promotes operator to admin
+        $response = $this->actingAs($this->admin)->put("/admin/users/{$this->operator->id}", [
+            'name' => 'Promoted Operator',
+            'email' => $this->operator->email,
+            'role' => 'admin',
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect('/admin/users');
+        $this->assertEquals('admin', $this->operator->fresh()->role);
+
+        // Second admin demotes first operator-turned-admin back to operator
+        $response = $this->actingAs($this->admin)->put("/admin/users/{$this->operator->id}", [
+            'name' => 'Demoted Back',
+            'email' => $this->operator->email,
+            'role' => 'operator',
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect('/admin/users');
+        $this->assertEquals('operator', $this->operator->fresh()->role);
     }
 
     /** 14. Admin cannot delete themselves */

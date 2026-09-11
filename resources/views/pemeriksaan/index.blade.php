@@ -77,57 +77,57 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">Kesimpulan</label>
-                            <select name="kesimpulan" class="border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 rounded-lg shadow-sm block w-full p-2.5 text-sm">
-                                <option value="">Semua</option>
-                                <option value="SEHAT DAN TIDAK BUTA WARNA" {{ ($kesimpulan ?? '') == 'SEHAT DAN TIDAK BUTA WARNA' ? 'selected' : '' }}>Sehat & Tidak Buta Warna</option>
-                                <option value="SEHAT DAN BUTA WARNA" {{ ($kesimpulan ?? '') == 'SEHAT DAN BUTA WARNA' ? 'selected' : '' }}>Sehat & Buta Warna</option>
-                                <option value="SEHAT DAN BUTA WARNA PARSIAL" {{ ($kesimpulan ?? '') == 'SEHAT DAN BUTA WARNA PARSIAL' ? 'selected' : '' }}>Sehat & Buta Warna Parsial</option>
-                                <option value="SEHAT" {{ ($kesimpulan ?? '') == 'SEHAT' ? 'selected' : '' }}>Sehat</option>
-                                <option value="TIDAK SEHAT" {{ ($kesimpulan ?? '') == 'TIDAK SEHAT' ? 'selected' : '' }}>Tidak Sehat</option>
-                                <option value="TIDAK SEHAT DAN BUTA WARNA PARSIAL" {{ ($kesimpulan ?? '') == 'TIDAK SEHAT DAN BUTA WARNA PARSIAL' ? 'selected' : '' }}>Tidak Sehat & Buta Warna Parsial</option>
-                            </select>
+                            <x-form-select name="kesimpulan" :value="$kesimpulan ?? ''" placeholder="Semua" :options="[
+                                '' => 'Semua',
+                                'SEHAT DAN TIDAK BUTA WARNA' => 'Sehat & Tidak Buta Warna',
+                                'SEHAT DAN BUTA WARNA' => 'Sehat & Buta Warna',
+                                'SEHAT DAN BUTA WARNA PARSIAL' => 'Sehat & Buta Warna Parsial',
+                                'SEHAT' => 'Sehat',
+                                'TIDAK SEHAT' => 'Tidak Sehat',
+                                'TIDAK SEHAT DAN BUTA WARNA PARSIAL' => 'Tidak Sehat & Buta Warna Parsial'
+                            ]" />
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">Fakultas / Pekerjaan</label>
-                            <select name="fakultas" class="border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 rounded-lg shadow-sm block w-full p-2.5 text-sm">
-                                <option value="">Semua Fakultas</option>
-                                <option value="Fakultas Tarbiyah dan Keguruan" {{ ($fakultas ?? '') == 'Fakultas Tarbiyah dan Keguruan' ? 'selected' : '' }}>Fakultas Tarbiyah dan Keguruan</option>
-                                <option value="Fakultas Syariah dan Hukum" {{ ($fakultas ?? '') == 'Fakultas Syariah dan Hukum' ? 'selected' : '' }}>Fakultas Syariah dan Hukum</option>
-                                <option value="Fakultas Dakwah dan Komunikasi" {{ ($fakultas ?? '') == 'Fakultas Dakwah dan Komunikasi' ? 'selected' : '' }}>Fakultas Dakwah dan Komunikasi</option>
-                                <option value="Fakultas Ushuluddin dan Filsafat" {{ ($fakultas ?? '') == 'Fakultas Ushuluddin dan Filsafat' ? 'selected' : '' }}>Fakultas Ushuluddin dan Filsafat</option>
-                                <option value="Fakultas Adab dan Humaniora" {{ ($fakultas ?? '') == 'Fakultas Adab dan Humaniora' ? 'selected' : '' }}>Fakultas Adab dan Humaniora</option>
-                                <option value="Fakultas Ekonomi dan Bisnis Islam" {{ ($fakultas ?? '') == 'Fakultas Ekonomi dan Bisnis Islam' ? 'selected' : '' }}>Fakultas Ekonomi dan Bisnis Islam</option>
-                                <option value="Fakultas Sains dan Teknologi" {{ ($fakultas ?? '') == 'Fakultas Sains dan Teknologi' ? 'selected' : '' }}>Fakultas Sains dan Teknologi</option>
-                                <option value="Fakultas Psikologi" {{ ($fakultas ?? '') == 'Fakultas Psikologi' ? 'selected' : '' }}>Fakultas Psikologi</option>
-                                <option value="Fakultas Ilmu Sosial dan Ilmu Pemerintahan" {{ ($fakultas ?? '') == 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' ? 'selected' : '' }}>Fakultas Ilmu Sosial dan Ilmu Pemerintahan</option>
-                            </select>
+                            <x-form-select name="fakultas" :value="$fakultas ?? ''" placeholder="Semua Fakultas" :options="[
+                                '' => 'Semua Fakultas',
+                                'Fakultas Tarbiyah dan Keguruan' => 'Fakultas Tarbiyah dan Keguruan',
+                                'Fakultas Syariah dan Hukum' => 'Fakultas Syariah dan Hukum',
+                                'Fakultas Dakwah dan Komunikasi' => 'Fakultas Dakwah dan Komunikasi',
+                                'Fakultas Ushuluddin dan Filsafat' => 'Fakultas Ushuluddin dan Filsafat',
+                                'Fakultas Adab dan Humaniora' => 'Fakultas Adab dan Humaniora',
+                                'Fakultas Ekonomi dan Bisnis Islam' => 'Fakultas Ekonomi dan Bisnis Islam',
+                                'Fakultas Sains dan Teknologi' => 'Fakultas Sains dan Teknologi',
+                                'Fakultas Psikologi' => 'Fakultas Psikologi',
+                                'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' => 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
+                            ]" />
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">Riwayat Medis</label>
-                            <select name="riwayat_medis" class="border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 rounded-lg shadow-sm block w-full p-2.5 text-sm">
-                                <option value="">Semua</option>
-                                <option value="Ada" {{ ($riwayat_medis ?? '') == 'Ada' ? 'selected' : '' }}>Ada Riwayat</option>
-                                <option value="Tidak Ada" {{ ($riwayat_medis ?? '') == 'Tidak Ada' ? 'selected' : '' }}>Tidak Ada</option>
-                            </select>
+                            <x-form-select name="riwayat_medis" :value="$riwayat_medis ?? ''" placeholder="Semua" :options="[
+                                '' => 'Semua',
+                                'Ada' => 'Ada Riwayat',
+                                'Tidak Ada' => 'Tidak Ada'
+                            ]" />
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">L/P</label>
-                                <select name="jenis_kelamin" class="border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 rounded-lg shadow-sm block w-full p-2.5 text-sm">
-                                    <option value="">Semua</option>
-                                    <option value="Laki-laki" {{ ($jenis_kelamin ?? '') == 'Laki-laki' ? 'selected' : '' }}>L</option>
-                                    <option value="Perempuan" {{ ($jenis_kelamin ?? '') == 'Perempuan' ? 'selected' : '' }}>P</option>
-                                </select>
+                                <x-form-select name="jenis_kelamin" :value="$jenis_kelamin ?? ''" placeholder="Semua" :options="[
+                                    '' => 'Semua',
+                                    'Laki-laki' => 'L',
+                                    'Perempuan' => 'P'
+                                ]" />
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
-                                <select name="status_email" class="border-gray-300 focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 rounded-lg shadow-sm block w-full p-2.5 text-sm">
-                                    <option value="">Semua</option>
-                                    <option value="Terkirim" {{ ($status_email ?? '') == 'Terkirim' ? 'selected' : '' }}>Terkirim</option>
-                                    <option value="Gagal" {{ ($status_email ?? '') == 'Gagal' ? 'selected' : '' }}>Gagal</option>
-                                    <option value="Proses" {{ ($status_email ?? '') == 'Proses' ? 'selected' : '' }}>Proses</option>
-                                    <option value="Belum dikirim" {{ ($status_email ?? '') == 'Belum dikirim' ? 'selected' : '' }}>Belum dikirim</option>
-                                </select>
+                                <x-form-select name="status_email" :value="$status_email ?? ''" placeholder="Semua" :options="[
+                                    '' => 'Semua',
+                                    'Terkirim' => 'Terkirim',
+                                    'Gagal' => 'Gagal',
+                                    'Proses' => 'Proses',
+                                    'Belum dikirim' => 'Belum dikirim'
+                                ]" />
                             </div>
                         </div>
                     </div>
