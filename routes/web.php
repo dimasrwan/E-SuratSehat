@@ -5,11 +5,13 @@ use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\AuthController;
 use App\Models\Pemeriksaan;
 
+use App\Http\Controllers\Admin\UserController;
+
 // Guest Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-// Authenticated Operator Routes
+// Authenticated Routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -21,14 +23,21 @@ Route::middleware(['auth'])->group(function () {
         
         $pemeriksaanTerbaru = Pemeriksaan::latest()->take(5)->get();
 
+        $totalUser = \App\Models\User::count();
+        $totalAdmin = \App\Models\User::where('role', 'admin')->count();
+        $totalOperator = \App\Models\User::where('role', 'operator')->count();
+
         return view('dashboard', compact(
             'totalPemeriksaan',
             'pdfDibuat',
             'emailTerkirim',
             'emailGagal',
-            'pemeriksaanTerbaru'
+            'pemeriksaanTerbaru',
+            'totalUser',
+            'totalAdmin',
+            'totalOperator'
         ));
-    });
+    })->name('dashboard');
 
     Route::get('/pemeriksaan/export/excel', [PemeriksaanController::class, 'exportExcel'])->name('pemeriksaan.exportExcel');
     Route::get('/pemeriksaan/export/pdf', [PemeriksaanController::class, 'exportPdf'])->name('pemeriksaan.exportPdf');
@@ -43,4 +52,10 @@ Route::middleware(['auth'])->group(function () {
         $pengiriman = Pemeriksaan::whereNotNull('email')->latest()->paginate(10);
         return view('pengiriman.index', compact('pengiriman'));
     })->name('pengiriman.index');
+
+    // Admin Routes
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('users', UserController::class);
+        Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+    });
 });

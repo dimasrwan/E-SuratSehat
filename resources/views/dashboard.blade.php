@@ -3,10 +3,20 @@
 @section('content')
 <div>
     <div class="mb-8 flex items-center justify-between">
-        <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Dashboard</h2>
-        <a href="/pemeriksaan/create" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
-            + Input Data Pemeriksaan
-        </a>
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Dashboard</h2>
+            <p class="text-sm text-gray-500">Selamat datang kembali, <span class="font-semibold text-emerald-700">{{ Auth::user()->name }}</span> ({{ ucfirst(Auth::user()->role) }})</p>
+        </div>
+        <div class="flex gap-3">
+            @if(Auth::user()->isAdmin())
+            <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-4 py-2.5 bg-amber-600 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-amber-700 transition">
+                Manajemen User ({{ $totalUser ?? 0 }})
+            </a>
+            @endif
+            <a href="/pemeriksaan/create" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
+                + Input Data Pemeriksaan
+            </a>
+        </div>
     </div>
 
     <!-- 4 Information Cards -->

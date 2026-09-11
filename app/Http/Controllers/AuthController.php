@@ -39,6 +39,14 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        if ($user && ! $user->isActive()) {
+            RateLimiter::hit($throttleKey, 60);
+            return back()->withErrors([
+                'email' => 'Akun Anda tidak aktif. Silakan hubungi administrator.',
+            ])->onlyInput('email');
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate();

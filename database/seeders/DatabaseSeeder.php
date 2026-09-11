@@ -19,6 +19,17 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Operator Klinik',
                 'password' => Hash::make('OperatorKlinik2026!'),
                 'role' => 'operator',
+                'is_active' => true,
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'admin@klinik.uin.ac.id'],
+            [
+                'name' => 'Administrator Klinik',
+                'password' => Hash::make('AdminKlinik2026!'),
+                'role' => 'admin',
+                'is_active' => true,
             ]
         );
     }

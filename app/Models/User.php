@@ -19,7 +19,6 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'role',
         'password',
     ];
 
@@ -43,14 +42,31 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 
     /**
-     * Check if user has operator role.
+     * Check if user is active.
+     */
+    public function isActive(): bool
+    {
+        return (bool) $this->is_active;
+    }
+
+    /**
+     * Check if user has admin role and is active.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin' && $this->isActive();
+    }
+
+    /**
+     * Check if user has operator or admin role and is active.
      */
     public function isOperator(): bool
     {
-        return $this->role === 'operator' || $this->role === 'admin';
+        return ($this->role === 'operator' || $this->role === 'admin') && $this->isActive();
     }
 }

@@ -34,6 +34,11 @@
                         <a href="/pengiriman" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('pengiriman*') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
                             Pengiriman
                         </a>
+                        @if(Auth::check() && Auth::user()->isAdmin())
+                        <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('admin/users*') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
+                            Manajemen Pengguna
+                        </a>
+                        @endif
                     </div>
                 </div>
 
