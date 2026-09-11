@@ -75,7 +75,7 @@
                             @forelse ($pengiriman as $data)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @if($data->status_pengiriman != 'Terkirim')
+                                        @if(!in_array($data->status_pengiriman, ['Terkirim', 'Dalam antrean', 'Mengirim']))
                                             <input type="checkbox" name="pemeriksaan_ids[]" value="{{ $data->id }}" class="row-checkbox rounded border-gray-300 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50">
                                         @else
                                             <input type="checkbox" disabled class="rounded border-gray-300 text-gray-300 shadow-sm">
@@ -91,18 +91,22 @@
                                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">Terkirim</span>
                                         @elseif($data->status_pengiriman == 'Gagal')
                                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Gagal</span>
+                                        @elseif($data->status_pengiriman == 'Mengirim')
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800 animate-pulse">Mengirim</span>
+                                        @elseif($data->status_pengiriman == 'Dalam antrean')
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-sky-100 text-sky-800">Dalam antrean</span>
                                         @else
                                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Belum dikirim</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @if($data->status_pengiriman == 'Gagal' || $data->status_pengiriman == 'Belum dikirim')
-                                            <button type="submit" formaction="{{ route('pemeriksaan.sendEmail', $data->id) }}" onclick="event.preventDefault(); submitAjaxForm(this.closest('form'), this.id, 'Mengirim...', this.getAttribute('formaction'))" id="btn-individu-{{ $data->id }}" class="inline-flex items-center text-emerald-700 hover:text-white hover:bg-emerald-700 border border-emerald-700 bg-emerald-50 px-3 py-1 rounded transition">
+                                        @if(!in_array($data->status_pengiriman, ['Dalam antrean', 'Mengirim']))
+                                            <button type="submit" formaction="{{ route('pemeriksaan.sendEmail', $data->id) }}" onclick="event.preventDefault(); submitAjaxForm(this.closest('form'), this.id, 'Memproses...', this.getAttribute('formaction'))" id="btn-individu-{{ $data->id }}" class="inline-flex items-center text-emerald-700 hover:text-white hover:bg-emerald-700 border border-emerald-700 bg-emerald-50 px-3 py-1 rounded transition">
                                                 <svg class="icon-loading hidden animate-spin h-5 w-5 mr-1.5 text-emerald-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                                                <span class="btn-text font-bold">Kirim Individu</span>
+                                                <span class="btn-text font-bold">{{ $data->status_pengiriman == 'Terkirim' ? 'Kirim Ulang' : 'Kirim Individu' }}</span>
                                             </button>
                                         @else
-                                            <span class="text-gray-400 italic">Selesai</span>
+                                            <span class="text-sky-600 italic text-xs font-semibold">Diproses...</span>
                                         @endif
                                     </td>
                                 </tr>

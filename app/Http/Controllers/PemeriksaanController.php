@@ -70,29 +70,33 @@ class PemeriksaanController extends Controller
         return view('pemeriksaan.index', compact('pemeriksaans', 'search', 'tanggal', 'kesimpulan', 'fakultas', 'jenis_kelamin', 'status_email', 'riwayat_medis', 'nomor_surat'));
     }
 
-    public function create()
+    public function generateNomorSurat(bool $lock = true): string
     {
-        $all_active = Pemeriksaan::whereNotNull('nomor_surat')->get();
+        $query = Pemeriksaan::whereNotNull('nomor_surat')->where('nomor_surat', '!=', '');
+        if ($lock) {
+            $query->lockForUpdate();
+        }
+        $all_active = $query->get();
         $used_numbers = [];
-        foreach($all_active as $record) {
+        foreach ($all_active as $record) {
             $parts = explode('/', $record->nomor_surat);
-            if(isset($parts[0]) && is_numeric($parts[0])) {
+            if (isset($parts[0]) && is_numeric($parts[0])) {
                 $used_numbers[] = (int)$parts[0];
             }
         }
         
         $new_num_int = 172; 
-        if(count($used_numbers) > 0) {
+        if (count($used_numbers) > 0) {
             $max_num = max($used_numbers);
             $found_gap = false;
-            for($i = 172; $i <= $max_num; $i++) {
-                if(!in_array($i, $used_numbers)) {
+            for ($i = 172; $i <= $max_num; $i++) {
+                if (!in_array($i, $used_numbers)) {
                     $new_num_int = $i;
                     $found_gap = true;
                     break;
                 }
             }
-            if(!$found_gap) {
+            if (!$found_gap) {
                 $new_num_int = $max_num + 1;
             }
         }
@@ -100,8 +104,12 @@ class PemeriksaanController extends Controller
         $new_num_str = str_pad($new_num_int, 4, '0', STR_PAD_LEFT);
         $current_month = date('m');
         $current_year = date('Y');
-        $estimated_nomor = "{$new_num_str}/Un.08/PPKES/{$current_month}/{$current_year}";
+        return "{$new_num_str}/Un.08/PPKES/{$current_month}/{$current_year}";
+    }
 
+    public function create()
+    {
+        $estimated_nomor = $this->generateNomorSurat(false);
         return view('pemeriksaan.create', compact('estimated_nomor'));
     }
 
@@ -134,39 +142,25 @@ class PemeriksaanController extends Controller
             'kesimpulan' => 'nullable|string|max:255',
         ]);
 
-        $pemeriksaan = DB::transaction(function () use ($validated) {
-            $all_active = Pemeriksaan::whereNotNull('nomor_surat')->lockForUpdate()->get();
-            $used_numbers = [];
-            foreach($all_active as $record) {
-                $parts = explode('/', $record->nomor_surat);
-                if(isset($parts[0]) && is_numeric($parts[0])) {
-                    $used_numbers[] = (int)$parts[0];
-                }
-            }
-            
-            $new_num_int = 172; // Start numbering from here
-            if(count($used_numbers) > 0) {
-                $max_num = max($used_numbers);
-                $found_gap = false;
-                for($i = 172; $i <= $max_num; $i++) {
-                    if(!in_array($i, $used_numbers)) {
-                        $new_num_int = $i;
-                        $found_gap = true;
-                        break;
-                    }
-                }
-                if(!$found_gap) {
-                    $new_num_int = $max_num + 1;
-                }
-            }
+        $maxAttempts = 5;
+        $attempt = 0;
+        $pemeriksaan = null;
 
-            $new_num_str = str_pad($new_num_int, 4, '0', STR_PAD_LEFT);
-            $current_month = date('m');
-            $current_year = date('Y');
-            $validated['nomor_surat'] = "{$new_num_str}/Un.08/PPKES/{$current_month}/{$current_year}";
-
-            return Pemeriksaan::create($validated);
-        });
+        while ($attempt < $maxAttempts) {
+            $attempt++;
+            try {
+                $pemeriksaan = DB::transaction(function () use ($validated) {
+                    $validated['nomor_surat'] = $this->generateNomorSurat(true);
+                    return Pemeriksaan::create($validated);
+                }, 3);
+                break;
+            } catch (\Illuminate\Database\UniqueConstraintViolationException | \Illuminate\Database\QueryException $e) {
+                if ($attempt >= $maxAttempts) {
+                    throw $e;
+                }
+                usleep(50000); // 50ms pause before retry
+            }
+        }
 
         return redirect()->route('pemeriksaan.show', $pemeriksaan->id)
             ->with('success', 'Data pemeriksaan berhasil disimpan.');
@@ -242,18 +236,24 @@ class PemeriksaanController extends Controller
     public function sendEmail(Pemeriksaan $pemeriksaan)
     {
         if (!$pemeriksaan->email) {
-            return back()->withErrors(['email' => 'Alamat email mahasiswa tidak tersedia.']);
-        }
-
-        \App\Jobs\SendSuratSehatJob::dispatchSync($pemeriksaan);
-
-        if ($pemeriksaan->fresh()->status_pengiriman === 'Gagal') {
-            $msg = 'Gagal mengirim email ke ' . $pemeriksaan->email . '. Periksa pengaturan mail server Anda.';
+            $msg = 'Alamat email mahasiswa tidak tersedia.';
             if (request()->wantsJson()) return response()->json(['success' => false, 'message' => $msg], 400);
             return back()->withErrors(['email' => $msg]);
         }
 
-        $msg = 'Email berhasil dikirim ke ' . $pemeriksaan->email;
+        if (in_array($pemeriksaan->status_pengiriman, ['Dalam antrean', 'Mengirim'])) {
+            $msg = 'Email untuk ' . $pemeriksaan->nama . ' sudah berada dalam antrean atau sedang dikirim.';
+            if (request()->wantsJson()) return response()->json(['success' => true, 'message' => $msg]);
+            return back()->with('success', $msg);
+        }
+
+        $pemeriksaan->update([
+            'status_pengiriman' => 'Dalam antrean'
+        ]);
+
+        \App\Jobs\SendSuratSehatJob::dispatch($pemeriksaan);
+
+        $msg = 'Email untuk ' . $pemeriksaan->nama . ' berhasil dimasukkan ke antrean pengiriman.';
         if (request()->wantsJson()) return response()->json(['success' => true, 'message' => $msg]);
         return back()->with('success', $msg);
     }
@@ -263,33 +263,40 @@ class PemeriksaanController extends Controller
         $ids = $request->input('pemeriksaan_ids', []);
         
         if (empty($ids)) {
-            return back()->withErrors(['bulk' => 'Tidak ada data yang dipilih.']);
+            $msg = 'Tidak ada data yang dipilih.';
+            if ($request->wantsJson()) return response()->json(['success' => false, 'message' => $msg], 400);
+            return back()->withErrors(['bulk' => $msg]);
         }
 
-        $pemeriksaans = Pemeriksaan::whereIn('id', $ids)->whereNotNull('email')->get();
+        $pemeriksaans = Pemeriksaan::whereIn('id', $ids)->whereNotNull('email')->where('email', '!=', '')->get();
         
         if ($pemeriksaans->isEmpty()) {
-            return back()->withErrors(['bulk' => 'Data terpilih tidak memiliki email yang valid.']);
+            $msg = 'Data terpilih tidak memiliki email yang valid.';
+            if ($request->wantsJson()) return response()->json(['success' => false, 'message' => $msg], 400);
+            return back()->withErrors(['bulk' => $msg]);
         }
 
-        $berhasil = 0;
-        $gagal = 0;
+        $dispatched = 0;
         foreach ($pemeriksaans as $pemeriksaan) {
-            \App\Jobs\SendSuratSehatJob::dispatchSync($pemeriksaan);
-            if ($pemeriksaan->fresh()->status_pengiriman === 'Terkirim') {
-                $berhasil++;
-            } else {
-                $gagal++;
+            if (in_array($pemeriksaan->status_pengiriman, ['Dalam antrean', 'Mengirim'])) {
+                continue;
             }
+
+            $pemeriksaan->update([
+                'status_pengiriman' => 'Dalam antrean'
+            ]);
+
+            \App\Jobs\SendSuratSehatJob::dispatch($pemeriksaan);
+            $dispatched++;
         }
 
-        $pesan = $berhasil . ' email berhasil dikirim.';
-        if ($gagal > 0) {
-            $pesan .= ' ' . $gagal . ' email gagal dikirim.';
+        $pesan = $dispatched . ' email berhasil dimasukkan ke antrean pengiriman.';
+        if ($dispatched === 0) {
+            $pesan = 'Semua email terpilih sudah berada dalam antrean atau sedang dikirim.';
         }
 
         if ($request->wantsJson()) {
-            return response()->json(['success' => $gagal === 0, 'message' => $pesan], $gagal > 0 && $berhasil === 0 ? 400 : 200);
+            return response()->json(['success' => true, 'message' => $pesan]);
         }
 
         return back()->with('success', $pesan);
@@ -297,21 +304,28 @@ class PemeriksaanController extends Controller
 
     public function sendFailedBulk(Request $request)
     {
-        $pemeriksaans = Pemeriksaan::whereNotNull('email')->where('status_pengiriman', 'Gagal')->get();
+        $pemeriksaans = Pemeriksaan::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->where('status_pengiriman', 'Gagal')
+            ->get();
         
         if ($pemeriksaans->isEmpty()) {
-            return back()->with('success', 'Tidak ada email gagal yang perlu dikirim ulang.');
+            $msg = 'Tidak ada email gagal yang perlu dikirim ulang.';
+            if ($request->wantsJson()) return response()->json(['success' => true, 'message' => $msg]);
+            return back()->with('success', $msg);
         }
 
-        $berhasil = 0;
+        $dispatched = 0;
         foreach ($pemeriksaans as $pemeriksaan) {
-            \App\Jobs\SendSuratSehatJob::dispatchSync($pemeriksaan);
-            if ($pemeriksaan->fresh()->status_pengiriman === 'Terkirim') {
-                $berhasil++;
-            }
+            $pemeriksaan->update([
+                'status_pengiriman' => 'Dalam antrean'
+            ]);
+
+            \App\Jobs\SendSuratSehatJob::dispatch($pemeriksaan);
+            $dispatched++;
         }
 
-        $msg = $berhasil . ' dari ' . $pemeriksaans->count() . ' email gagal berhasil dikirim ulang.';
+        $msg = $dispatched . ' dari ' . $pemeriksaans->count() . ' email gagal berhasil dimasukkan ke antrean pengiriman.';
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => $msg]);
         }
