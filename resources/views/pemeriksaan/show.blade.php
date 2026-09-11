@@ -44,6 +44,7 @@
             <div class="text-right">
                 <p class="text-sm font-bold text-gray-700">No. Surat: {{ $pemeriksaan->nomor_surat ?? '-' }}</p>
                 <p class="text-sm text-gray-500">Dokter: {{ $pemeriksaan->dokter_nama ?? '-' }}</p>
+                <p class="text-xs font-bold text-emerald-800 mt-0.5">Tahun Maba: {{ $pemeriksaan->tahun_masuk }}</p>
             </div>
         </div>
         <div>

@@ -10,6 +10,22 @@ class PemeriksaanController extends Controller
 {
     public function index(Request $request)
     {
+        $activeYear = \App\Services\TahunMabaService::getActiveYearInt();
+        $yearsInMaster = \App\Models\TahunMaba::orderBy('tahun', 'desc')->pluck('tahun')->toArray();
+        $yearsInDb = Pemeriksaan::select('tahun_masuk')->distinct()->orderBy('tahun_masuk', 'desc')->pluck('tahun_masuk')->toArray();
+        $availableYears = array_unique(array_merge([$activeYear], $yearsInMaster, $yearsInDb));
+        rsort($availableYears);
+
+        $selectedTahun = $request->input('tahun_masuk');
+        if ($selectedTahun === null) {
+            $selectedTahun = (string)$activeYear;
+        } else if ($selectedTahun !== 'all') {
+            $selectedTahun = preg_replace('/[^0-9]/', '', (string)$selectedTahun);
+            if ($selectedTahun !== '' && !in_array((int)$selectedTahun, $availableYears)) {
+                $selectedTahun = (string)$activeYear;
+            }
+        }
+
         $search = $request->input('search');
         $tanggal = $request->input('tanggal');
         $kesimpulan = $request->input('kesimpulan');
@@ -17,10 +33,13 @@ class PemeriksaanController extends Controller
         $jenis_kelamin = $request->input('jenis_kelamin');
         $status_email = $request->input('status_email');
         $riwayat_medis = $request->input('riwayat_medis');
-        
-        $nomor_surat = $request->nomor_surat;
+        $nomor_surat = $request->input('nomor_surat');
         
         $query = Pemeriksaan::query();
+
+        if ($selectedTahun !== '' && $selectedTahun !== 'all') {
+            $query->where('tahun_masuk', (int)$selectedTahun);
+        }
 
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -67,7 +86,11 @@ class PemeriksaanController extends Controller
 
         $pemeriksaans = $query->orderBy('id', 'desc')->paginate(10)->appends($request->all());
 
-        return view('pemeriksaan.index', compact('pemeriksaans', 'search', 'tanggal', 'kesimpulan', 'fakultas', 'jenis_kelamin', 'status_email', 'riwayat_medis', 'nomor_surat'));
+        return view('pemeriksaan.index', compact(
+            'pemeriksaans', 'search', 'tanggal', 'kesimpulan', 'fakultas', 
+            'jenis_kelamin', 'status_email', 'riwayat_medis', 'nomor_surat',
+            'availableYears', 'selectedTahun', 'activeYear'
+        ));
     }
 
     public function generateNomorSurat(bool $lock = true): string
@@ -107,15 +130,19 @@ class PemeriksaanController extends Controller
         return "{$new_num_str}/Un.08/PPKES/{$current_month}/{$current_year}";
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $estimated_nomor = $this->generateNomorSurat(false);
-        return view('pemeriksaan.create', compact('estimated_nomor'));
+        $tahunContext = \App\Services\TahunMabaService::getActiveYearInt();
+
+        return view('pemeriksaan.create', compact('estimated_nomor', 'tahunContext'));
     }
 
     public function store(Request $request)
     {
+        $currentYear = (int)date('Y');
         $validated = $request->validate([
+            'tahun_masuk' => 'nullable|integer|min:2000|max:' . ($currentYear + 10),
             'nomor_surat' => 'nullable|string|max:255',
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -141,6 +168,9 @@ class PemeriksaanController extends Controller
             'riwayat_alergi' => 'nullable|string|max:255',
             'kesimpulan' => 'nullable|string|max:255',
         ]);
+
+        // FORCE SERVER-SIDE ACTIVE YEAR CONTEXT FOR NEW CREATION (IGNORING CLIENT REQUEST MANIPULATION)
+        $validated['tahun_masuk'] = \App\Services\TahunMabaService::getActiveYearInt();
 
         $maxAttempts = 5;
         $attempt = 0;
@@ -178,7 +208,9 @@ class PemeriksaanController extends Controller
 
     public function update(Request $request, Pemeriksaan $pemeriksaan)
     {
+        $currentYear = (int)date('Y');
         $validated = $request->validate([
+            'tahun_masuk' => 'nullable|integer|min:2000|max:' . ($currentYear + 10),
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'nik' => 'nullable|string|max:20',
@@ -204,7 +236,7 @@ class PemeriksaanController extends Controller
             'kesimpulan' => 'nullable|string|max:255',
         ]);
 
-        unset($validated['nomor_surat'], $validated['status_pengiriman'], $validated['waktu_pengiriman']);
+        unset($validated['nomor_surat'], $validated['status_pengiriman'], $validated['waktu_pengiriman'], $validated['tahun_masuk']);
 
         $pemeriksaan->update($validated);
 
@@ -335,6 +367,21 @@ class PemeriksaanController extends Controller
 
     private function applyFilters(Request $request)
     {
+        $activeYear = \App\Services\TahunMabaService::getActiveYearInt();
+        $yearsInMaster = \App\Models\TahunMaba::orderBy('tahun', 'desc')->pluck('tahun')->toArray();
+        $yearsInDb = Pemeriksaan::select('tahun_masuk')->distinct()->orderBy('tahun_masuk', 'desc')->pluck('tahun_masuk')->toArray();
+        $availableYears = array_unique(array_merge([$activeYear], $yearsInMaster, $yearsInDb));
+
+        $tahun_masuk = $request->input('tahun_masuk');
+        if ($tahun_masuk === null) {
+            $tahun_masuk = (string)$activeYear;
+        } else if ($tahun_masuk !== 'all') {
+            $tahun_masuk = preg_replace('/[^0-9]/', '', (string)$tahun_masuk);
+            if ($tahun_masuk !== '' && !in_array((int)$tahun_masuk, $availableYears)) {
+                $tahun_masuk = (string)$activeYear;
+            }
+        }
+
         $search = $request->input('search');
         $tanggal_awal = $request->input('tanggal_awal');
         $tanggal_akhir = $request->input('tanggal_akhir');
@@ -346,6 +393,10 @@ class PemeriksaanController extends Controller
         $nomor_surat = $request->input('nomor_surat');
         
         $query = Pemeriksaan::query();
+
+        if ($tahun_masuk !== '' && $tahun_masuk !== 'all') {
+            $query->where('tahun_masuk', (int)$tahun_masuk);
+        }
 
         if ($search) {
             $query->where(function($q) use ($search) {

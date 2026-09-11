@@ -2,18 +2,36 @@
 
 @section('content')
 <div>
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Dashboard</h2>
+            <h2 class="text-3xl font-bold text-gray-800 tracking-tight">
+                @php
+                    $cleanYearDash = preg_replace('/[^0-9]/', '', (string)($selectedTahun ?? 'all'));
+                @endphp
+                @if(($selectedTahun ?? 'all') === 'all' || empty($cleanYearDash))
+                    Dashboard (Semua Tahun)
+                @else
+                    Dashboard Maba {{ $cleanYearDash }}
+                @endif
+            </h2>
             <p class="text-sm text-gray-500">Selamat datang kembali, <span class="font-semibold text-emerald-700">{{ Auth::user()->name }}</span> ({{ ucfirst(Auth::user()->role) }})</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+            <form action="{{ url()->current() }}" method="GET" class="w-48">
+                @php
+                    $yearOptions = ['all' => 'Semua Tahun'];
+                    foreach ($availableYears as $yr) {
+                        $yearOptions[(string)$yr] = 'Maba ' . $yr;
+                    }
+                @endphp
+                <x-form-select name="tahun_masuk" :value="$selectedTahun ?? (string)date('Y')" placeholder="Pilih Tahun Maba" :options="$yearOptions" onchange="this.closest('form').submit()" />
+            </form>
             @if(Auth::user()->isAdmin())
             <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-4 py-2.5 bg-amber-600 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-amber-700 transition">
                 Manajemen User ({{ $totalUser ?? 0 }})
             </a>
             @endif
-            <a href="/pemeriksaan/create" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
+            <a href="{{ route('pemeriksaan.create', ['tahun_masuk' => ($selectedTahun !== 'all' ? $selectedTahun : date('Y'))]) }}" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
                 + Input Data Pemeriksaan
             </a>
         </div>

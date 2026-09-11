@@ -38,12 +38,21 @@
                         <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('admin/users*') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
                             Manajemen Pengguna
                         </a>
+                        <a href="{{ route('admin.tahun-maba.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('admin/tahun-maba*') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
+                            Manajemen Tahun Maba
+                        </a>
                         @endif
                     </div>
                 </div>
 
                 @auth
                 <div class="flex items-center gap-4">
+                    <div class="inline-flex items-center gap-1.5 bg-emerald-900/40 border border-emerald-600/50 px-3 py-1 rounded-full text-xs shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span class="text-emerald-200/90 font-normal hidden sm:inline">Tahun Aktif</span>
+                        <span class="text-emerald-300 font-medium hidden sm:inline">·</span>
+                        <span class="text-white font-semibold tracking-wide">Maba {{ \App\Services\TahunMabaService::getActiveYearInt() }}</span>
+                    </div>
                     <div class="text-right text-xs">
                         <div class="font-bold text-white">{{ Auth::user()->name }}</div>
                         <div class="text-emerald-200 capitalize">{{ Auth::user()->role ?? 'Operator' }}</div>

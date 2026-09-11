@@ -2,9 +2,35 @@
 
 @section('content')
 <div>
-    <div class="mb-8 flex items-center justify-between">
-        <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Pengiriman Surat Keterangan Sehat</h2>
-        <div class="flex gap-3">
+    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 tracking-tight">
+                @php
+                    $cleanYearPeng = preg_replace('/[^0-9]/', '', (string)($selectedTahun ?? 'all'));
+                @endphp
+                @if(($selectedTahun ?? 'all') === 'all' || empty($cleanYearPeng))
+                    Pengiriman Surat Keterangan Sehat
+                @else
+                    Pengiriman Surat Maba {{ $cleanYearPeng }}
+                @endif
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Daftar pengiriman email surat kesehatan per angkatan mahasiswa baru.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <form action="{{ route('pengiriman.index') }}" method="GET" class="w-48">
+                @php
+                    $yearOptions = ['all' => 'Semua Tahun'];
+                    foreach ($availableYears as $yr) {
+                        $yearOptions[(string)$yr] = 'Maba ' . $yr;
+                    }
+                @endphp
+                <x-form-select name="tahun_masuk" :value="$selectedTahun ?? (string)$activeYear" placeholder="Pilih Tahun Maba" :options="$yearOptions" onchange="this.closest('form').submit()" />
+            </form>
+            <div class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-800 text-xs font-semibold shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-500">Input Baru:</span>
+                <span class="font-bold text-emerald-900">Maba {{ $activeYear }}</span>
+            </div>
             <form action="{{ route('pengiriman.retryFailed') }}" method="POST" onsubmit="event.preventDefault(); if(confirm('Kirim ulang semua email yang gagal?')) submitAjaxForm(this, 'btn-kirim-ulang', 'Mengirim...');">
                 @csrf
                 <button type="submit" id="btn-kirim-ulang" class="inline-flex items-center px-5 py-2.5 bg-amber-500 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition ease-in-out duration-150">

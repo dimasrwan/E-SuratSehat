@@ -24,6 +24,16 @@
             <div class="p-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                     <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-700">Tahun Pendaftaran <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3">
+                            <span class="text-emerald-900 font-bold text-base">Maba {{ $tahunContext }}</span>
+                            <span class="bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Tahun Aktif</span>
+                        </div>
+                        <input type="hidden" name="tahun_masuk" value="{{ $tahunContext }}">
+                        <p class="mt-1.5 text-[11px] text-slate-500 italic">*Ditentukan berdasarkan Tahun Aktif yang ditetapkan Admin.</p>
+                    </div>
+
+                    <div>
                         <label for="nomor_surat" class="block mb-2 text-sm font-medium text-gray-700">Nomor Surat (Otomatis)</label>
                         <input type="text" name="nomor_surat" id="nomor_surat" value="{{ $estimated_nomor }}" readonly class="bg-gray-100 border border-gray-300 text-gray-500 font-mono text-sm rounded-xl block w-full p-3 cursor-not-allowed">
                         <p class="mt-1 text-xs text-gray-500 italic">*Nomor ini adalah estimasi. Jika ada antrean simpan, nomor bisa menyesuaikan otomatis untuk mencegah bentrok.</p>

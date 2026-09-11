@@ -3,7 +3,19 @@
 @section('content')
 <div>
     <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Data Pemeriksaan</h2>
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 tracking-tight">
+                @php
+                    $cleanYear = preg_replace('/[^0-9]/', '', (string)($selectedTahun ?? 'all'));
+                @endphp
+                @if(($selectedTahun ?? 'all') === 'all' || empty($cleanYear))
+                    Data Pemeriksaan
+                @else
+                    Data Pemeriksaan Maba {{ $cleanYear }}
+                @endif
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Kelola data surat keterangan sehat mahasiswa baru per angkatan/tahun masuk.</p>
+        </div>
         <div class="flex flex-wrap gap-3">
             <a href="{{ route('pemeriksaan.exportExcel', request()->all()) }}" class="inline-flex items-center px-5 py-2.5 bg-white border border-emerald-600 rounded-lg font-semibold text-sm text-emerald-700 tracking-wide shadow-sm hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition ease-in-out duration-150">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -13,7 +25,7 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Export ke PDF
             </a>
-            <a href="{{ route('pemeriksaan.create') }}" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
+            <a href="{{ route('pemeriksaan.create', ['tahun_masuk' => ($selectedTahun !== 'all' ? $selectedTahun : date('Y'))]) }}" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
                 + Tambah Data Baru
             </a>
         </div>
@@ -40,6 +52,15 @@
             <form action="{{ route('pemeriksaan.index') }}" method="GET" class="mb-6">
                 <!-- Search & Actions Row -->
                 <div class="flex flex-col md:flex-row gap-3 mb-4">
+                    <div class="w-full md:w-56 flex-shrink-0">
+                        @php
+                            $yearOptions = ['all' => 'Semua Tahun'];
+                            foreach ($availableYears as $yr) {
+                                $yearOptions[(string)$yr] = 'Maba ' . $yr;
+                            }
+                        @endphp
+                        <x-form-select name="tahun_masuk" :value="$selectedTahun ?? (string)$activeYear" placeholder="Pilih Tahun Maba" :options="$yearOptions" onchange="this.closest('form').submit()" />
+                    </div>
                     <div class="relative flex-grow">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,7 +78,7 @@
                             Cari
                         </button>
                         @if(request()->hasAny(['search', 'tanggal_awal', 'tanggal_akhir', 'kesimpulan', 'fakultas', 'jenis_kelamin', 'status_email', 'riwayat_medis', 'nomor_surat']))
-                            <a href="{{ route('pemeriksaan.index') }}" class="inline-flex items-center px-4 py-2.5 bg-gray-100 border border-transparent rounded-lg font-semibold text-sm text-gray-600 tracking-wide hover:bg-gray-200 transition tooltip" title="Reset Semua Filter">
+                            <a href="{{ route('pemeriksaan.index', ['tahun_masuk' => $selectedTahun]) }}" class="inline-flex items-center px-4 py-2.5 bg-gray-100 border border-transparent rounded-lg font-semibold text-sm text-gray-600 tracking-wide hover:bg-gray-200 transition tooltip" title="Reset Semua Filter">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </a>
                         @endif
@@ -65,7 +86,7 @@
                 </div>
 
                 <!-- Advanced Filters (Collapsible) -->
-                <div id="advanced-filters" class="{{ request()->hasAny(['tanggal', 'kesimpulan', 'fakultas', 'jenis_kelamin', 'status_email', 'riwayat_medis', 'nomor_surat']) ? '' : 'hidden' }} p-4 bg-gray-50 rounded-lg border border-gray-200 mt-2">
+                <div id="advanced-filters" class="hidden p-4 bg-gray-50 rounded-lg border border-gray-200 mt-2">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-1">Nomor Surat</label>

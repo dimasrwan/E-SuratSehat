@@ -25,6 +25,11 @@
             <div class="p-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                     <div>
+                        <label for="tahun_masuk" class="block mb-2 text-sm font-medium text-gray-700">Tahun Maba / Angkatan <span class="text-red-500">*</span></label>
+                        <input type="number" name="tahun_masuk" id="tahun_masuk" value="{{ old('tahun_masuk', $pemeriksaan->tahun_masuk) }}" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                    </div>
+
+                    <div>
                         <label for="nomor_surat" class="block mb-2 text-sm font-medium text-gray-700">Nomor Surat</label>
                         <input type="text" name="nomor_surat" id="nomor_surat" value="{{ old('nomor_surat', $pemeriksaan->nomor_surat) }}" placeholder="Contoh: 0130/Un.08/PPKES/07/2025" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
                     </div>

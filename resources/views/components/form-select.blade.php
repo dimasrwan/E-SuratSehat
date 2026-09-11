@@ -22,14 +22,8 @@
             $label = $optVal['label'] ?? $val;
             $extraAttr = $optVal['extra'] ?? [];
         } else {
-            // If associative array with string keys or sequential array
-            if (is_numeric($key) && !is_array($options)) {
-                $val = $optVal;
-                $label = $optVal;
-            } else {
-                $val = is_numeric($key) ? $optVal : $key;
-                $label = $optVal;
-            }
+            $val = $key;
+            $label = $optVal;
             $extraAttr = [];
         }
         $normalizedOptions[] = [
