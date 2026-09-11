@@ -28,14 +28,29 @@
                         <a href="/" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('/') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
                             Dashboard
                         </a>
-                        <a href="/pemeriksaan" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('pemeriksaan') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
+                        <a href="/pemeriksaan" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('pemeriksaan*') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
                             Data Pemeriksaan
                         </a>
-                        <a href="/pengiriman" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('pengiriman') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
+                        <a href="/pengiriman" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->is('pengiriman*') ? 'border-amber-400 text-white' : 'border-transparent text-emerald-100 hover:border-emerald-300 hover:text-white' }} text-sm font-medium transition">
                             Pengiriman
                         </a>
                     </div>
                 </div>
+
+                @auth
+                <div class="flex items-center gap-4">
+                    <div class="text-right text-xs">
+                        <div class="font-bold text-white">{{ Auth::user()->name }}</div>
+                        <div class="text-emerald-200 capitalize">{{ Auth::user()->role ?? 'Operator' }}</div>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-xs bg-emerald-900 hover:bg-emerald-950 text-emerald-100 font-semibold px-3 py-1.5 rounded-lg border border-emerald-700 transition">
+                            Keluar
+                        </button>
+                    </form>
+                </div>
+                @endauth
             </div>
         </div>
     </nav>

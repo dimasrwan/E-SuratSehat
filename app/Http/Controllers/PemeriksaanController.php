@@ -179,7 +179,6 @@ class PemeriksaanController extends Controller
     public function update(Request $request, Pemeriksaan $pemeriksaan)
     {
         $validated = $request->validate([
-            'nomor_surat' => 'nullable|string|max:255',
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'nik' => 'nullable|string|max:20',
@@ -204,6 +203,8 @@ class PemeriksaanController extends Controller
             'riwayat_alergi' => 'nullable|string|max:255',
             'kesimpulan' => 'nullable|string|max:255',
         ]);
+
+        unset($validated['nomor_surat'], $validated['status_pengiriman'], $validated['waktu_pengiriman']);
 
         $pemeriksaan->update($validated);
 

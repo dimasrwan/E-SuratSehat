@@ -3,14 +3,30 @@
 namespace Tests\Feature;
 
 use App\Models\Pemeriksaan;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class PemeriksaanConcurrencyTest extends TestCase
 {
     use DatabaseMigrations;
+
+    protected User $operator;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->operator = User::create([
+            'name' => 'Operator Concurrency Test',
+            'email' => 'operator_conc@klinik.uin.ac.id',
+            'password' => Hash::make('PasswordOperator123!'),
+            'role' => 'operator',
+        ]);
+        $this->actingAs($this->operator);
+    }
 
     /**
      * Test 1 - Normal: Single input generates expected number.

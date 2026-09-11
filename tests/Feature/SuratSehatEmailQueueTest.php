@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Jobs\SendSuratSehatJob;
 use App\Mail\SuratSehatMail;
 use App\Models\Pemeriksaan;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -14,10 +16,19 @@ class SuratSehatEmailQueueTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected User $operator;
+
     protected function setUp(): void
     {
         parent::setUp();
         Mail::fake();
+        $this->operator = User::create([
+            'name' => 'Operator Email Queue Test',
+            'email' => 'operator_mail@klinik.uin.ac.id',
+            'password' => Hash::make('PasswordOperator123!'),
+            'role' => 'operator',
+        ]);
+        $this->actingAs($this->operator);
     }
 
     /**
