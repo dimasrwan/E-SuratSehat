@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Operator | E-Surat Sehat Klinik UIN Ar-Raniry</title>
+    <title>Login | E-Surat Sehat Klinik UIN Ar-Raniry</title>
     <link rel="icon" type="image/png" href="{{ asset('logo-uin.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center font-sans antialiased py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
         <div class="text-center">
-            <img class="mx-auto h-20 w-20 object-contain bg-emerald-50 p-2 rounded-full border-2 border-emerald-500 shadow-sm" src="{{ asset('logo-uin.png') }}" alt="Logo UIN Ar-Raniry">
+            <a href="{{ route('landing') }}" class="inline-block">
+                <img class="mx-auto h-20 w-20 object-contain bg-emerald-50 p-2 rounded-full border-2 border-emerald-500 shadow-sm hover:scale-105 transition-transform" src="{{ asset('logo-uin.png') }}" alt="Logo UIN Ar-Raniry">
+            </a>
             <h2 class="mt-4 text-3xl font-extrabold text-gray-900 tracking-tight">E-Surat Sehat</h2>
             <p class="mt-1 text-sm font-medium text-emerald-700">Klinik UIN Ar-Raniry Banda Aceh</p>
-            <p class="mt-4 text-xs text-gray-500 uppercase tracking-widest font-semibold border-t border-b border-gray-100 py-2">Portal Login Operator Klinik</p>
+            <p class="mt-4 text-xs text-gray-500 uppercase tracking-widest font-semibold border-t border-b border-gray-100 py-2">Portal Login E-Surat Sehat</p>
         </div>
 
         @if ($errors->any())
@@ -31,8 +33,8 @@
             @csrf
             <div class="rounded-md space-y-4">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email Operator</label>
-                    <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}" placeholder="operator@klinik.uin.ac.id" class="appearance-none rounded-xl relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}" placeholder="user@klinik.uin.ac.id" class="appearance-none rounded-xl relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>

@@ -7,6 +7,34 @@ use App\Models\Pemeriksaan;
 
 use App\Http\Controllers\Admin\UserController;
 
+// Public Landing Page Route / Authenticated Dashboard Route
+Route::get('/', function () {
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        $totalPemeriksaan = Pemeriksaan::count();
+        $pdfDibuat = $totalPemeriksaan;
+        $emailTerkirim = Pemeriksaan::where('status_pengiriman', 'Terkirim')->count();
+        $emailGagal = Pemeriksaan::where('status_pengiriman', 'Gagal')->count();
+        
+        $pemeriksaanTerbaru = Pemeriksaan::latest()->take(5)->get();
+
+        $totalUser = \App\Models\User::count();
+        $totalAdmin = \App\Models\User::where('role', 'admin')->count();
+        $totalOperator = \App\Models\User::where('role', 'operator')->count();
+
+        return view('dashboard', compact(
+            'totalPemeriksaan',
+            'pdfDibuat',
+            'emailTerkirim',
+            'emailGagal',
+            'pemeriksaanTerbaru',
+            'totalUser',
+            'totalAdmin',
+            'totalOperator'
+        ));
+    }
+    return view('landing');
+})->name('landing');
+
 // Guest Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -15,7 +43,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/', function () {
+    Route::get('/dashboard', function () {
         $totalPemeriksaan = Pemeriksaan::count();
         $pdfDibuat = $totalPemeriksaan;
         $emailTerkirim = Pemeriksaan::where('status_pengiriman', 'Terkirim')->count();

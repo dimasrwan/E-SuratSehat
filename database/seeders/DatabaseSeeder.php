@@ -13,21 +13,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'operator@klinik.uin.ac.id'],
             [
                 'name' => 'Operator Klinik',
-                'password' => Hash::make('OperatorKlinik2026!'),
+                'password' => Hash::make('123'),
                 'role' => 'operator',
                 'is_active' => true,
             ]
         );
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@klinik.uin.ac.id'],
             [
                 'name' => 'Administrator Klinik',
-                'password' => Hash::make('AdminKlinik2026!'),
+                'password' => Hash::make('123'),
                 'role' => 'admin',
                 'is_active' => true,
             ]
