@@ -192,12 +192,12 @@ class SecurityHardeningTest extends TestCase
     }
 
     /**
-     * Test 12 - Logout invalidates session and redirects to login.
+     * Test 12 - Logout invalidates session and redirects to public home '/'.
      */
     public function test_logout_invalidates_session(): void
     {
         $response = $this->actingAs($this->operator)->post('/logout');
-        $response->assertRedirect('/login');
+        $response->assertRedirect('/');
         $this->assertGuest();
     }
 }
