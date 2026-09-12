@@ -93,8 +93,22 @@ class PemeriksaanController extends Controller
         ));
     }
 
-    public function generateNomorSurat(bool $lock = true): string
+    public function generateNomorSurat(bool $lock = true, ?int $tahunMasuk = null): string
     {
+        if ($tahunMasuk === null) {
+            $tahunMasuk = \App\Services\TahunMabaService::getActiveYearInt();
+        }
+
+        $tahunMabaModel = \App\Models\TahunMaba::where('tahun', $tahunMasuk)->first();
+        $startNumber = $tahunMabaModel ? (int)$tahunMabaModel->nomor_surat_mulai : 172;
+        if ($startNumber < 1) {
+            $startNumber = 172;
+        }
+
+        $kodeUnit = ($tahunMabaModel && !empty($tahunMabaModel->kode_unit)) ? trim($tahunMabaModel->kode_unit) : 'Un.08';
+        $kodeBagian = ($tahunMabaModel && !empty($tahunMabaModel->kode_bagian)) ? trim($tahunMabaModel->kode_bagian) : 'PPKES';
+        $tahunSurat = ($tahunMabaModel && !empty($tahunMabaModel->tahun_surat)) ? (int)$tahunMabaModel->tahun_surat : (int)$tahunMasuk;
+
         $query = Pemeriksaan::whereNotNull('nomor_surat')->where('nomor_surat', '!=', '');
         if ($lock) {
             $query->lockForUpdate();
@@ -108,32 +122,37 @@ class PemeriksaanController extends Controller
             }
         }
         
-        $new_num_int = 172; 
+        $new_num_int = $startNumber; 
         if (count($used_numbers) > 0) {
             $max_num = max($used_numbers);
+            $searchStart = max($startNumber, 1);
+            
             $found_gap = false;
-            for ($i = 172; $i <= $max_num; $i++) {
-                if (!in_array($i, $used_numbers)) {
-                    $new_num_int = $i;
-                    $found_gap = true;
-                    break;
+            if ($max_num >= $searchStart) {
+                for ($i = $searchStart; $i <= $max_num; $i++) {
+                    if (!in_array($i, $used_numbers)) {
+                        $new_num_int = $i;
+                        $found_gap = true;
+                        break;
+                    }
                 }
-            }
-            if (!$found_gap) {
-                $new_num_int = $max_num + 1;
+                if (!$found_gap) {
+                    $new_num_int = $max_num + 1;
+                }
+            } else {
+                $new_num_int = $searchStart;
             }
         }
 
         $new_num_str = str_pad($new_num_int, 4, '0', STR_PAD_LEFT);
         $current_month = date('m');
-        $current_year = date('Y');
-        return "{$new_num_str}/Un.08/PPKES/{$current_month}/{$current_year}";
+        return "{$new_num_str}/{$kodeUnit}/{$kodeBagian}/{$current_month}/{$tahunSurat}";
     }
 
     public function create(Request $request)
     {
-        $estimated_nomor = $this->generateNomorSurat(false);
         $tahunContext = \App\Services\TahunMabaService::getActiveYearInt();
+        $estimated_nomor = $this->generateNomorSurat(false, $tahunContext);
 
         return view('pemeriksaan.create', compact('estimated_nomor', 'tahunContext'));
     }
@@ -170,7 +189,8 @@ class PemeriksaanController extends Controller
         ]);
 
         // FORCE SERVER-SIDE ACTIVE YEAR CONTEXT FOR NEW CREATION (IGNORING CLIENT REQUEST MANIPULATION)
-        $validated['tahun_masuk'] = \App\Services\TahunMabaService::getActiveYearInt();
+        $activeYear = \App\Services\TahunMabaService::getActiveYearInt();
+        $validated['tahun_masuk'] = $activeYear;
 
         $maxAttempts = 5;
         $attempt = 0;
@@ -179,8 +199,8 @@ class PemeriksaanController extends Controller
         while ($attempt < $maxAttempts) {
             $attempt++;
             try {
-                $pemeriksaan = DB::transaction(function () use ($validated) {
-                    $validated['nomor_surat'] = $this->generateNomorSurat(true);
+                $pemeriksaan = DB::transaction(function () use ($validated, $activeYear) {
+                    $validated['nomor_surat'] = $this->generateNomorSurat(true, $activeYear);
                     return Pemeriksaan::create($validated);
                 }, 3);
                 break;

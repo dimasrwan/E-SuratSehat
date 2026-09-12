@@ -11,11 +11,17 @@ class TahunMaba extends Model
     protected $fillable = [
         'tahun',
         'nama',
+        'nomor_surat_mulai',
+        'kode_unit',
+        'kode_bagian',
+        'tahun_surat',
         'is_active',
     ];
 
     protected $casts = [
         'tahun' => 'integer',
+        'nomor_surat_mulai' => 'integer',
+        'tahun_surat' => 'integer',
         'is_active' => 'boolean',
     ];
 

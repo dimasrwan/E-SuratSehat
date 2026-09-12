@@ -36,7 +36,7 @@
                     <div>
                         <label for="nomor_surat" class="block mb-2 text-sm font-medium text-gray-700">Nomor Surat (Otomatis)</label>
                         <input type="text" name="nomor_surat" id="nomor_surat" value="{{ $estimated_nomor }}" readonly class="bg-gray-100 border border-gray-300 text-gray-500 font-mono text-sm rounded-xl block w-full p-3 cursor-not-allowed">
-                        <p class="mt-1 text-xs text-gray-500 italic">*Nomor ini adalah estimasi. Jika ada antrean simpan, nomor bisa menyesuaikan otomatis untuk mencegah bentrok.</p>
+                        <p class="mt-1 text-xs text-gray-500 italic">*Nomor surat dibuat otomatis berdasarkan pengaturan Tahun Maba yang ditetapkan Admin.</p>
                     </div>
 
                     <div>

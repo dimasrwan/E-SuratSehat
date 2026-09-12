@@ -120,5 +120,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('tahun-maba', \App\Http\Controllers\Admin\TahunMabaController::class)->only(['index', 'store']);
         Route::post('tahun-maba/{tahunMaba}/activate', [\App\Http\Controllers\Admin\TahunMabaController::class, 'activate'])->name('tahun-maba.activate');
+        Route::put('tahun-maba/{tahunMaba}/format', [\App\Http\Controllers\Admin\TahunMabaController::class, 'updateFormat'])->name('tahun-maba.updateFormat');
     });
 });

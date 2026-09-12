@@ -144,10 +144,11 @@
                                 <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
                                 <x-form-select name="status_email" :value="$status_email ?? ''" placeholder="Semua" :options="[
                                     '' => 'Semua',
+                                    'Belum dikirim' => 'Belum dikirim',
+                                    'Dalam antrean' => 'Dalam antrean',
+                                    'Mengirim' => 'Mengirim',
                                     'Terkirim' => 'Terkirim',
-                                    'Gagal' => 'Gagal',
-                                    'Proses' => 'Proses',
-                                    'Belum dikirim' => 'Belum dikirim'
+                                    'Gagal' => 'Gagal'
                                 ]" />
                             </div>
                         </div>
