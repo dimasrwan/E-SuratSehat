@@ -27,69 +27,177 @@ class PemeriksaanController extends Controller
         }
 
         $search = $request->input('search');
+        $status_antrean = $request->input('status_antrean');
+        
+        // Prioritize today's date if today has scheduled Maba for active year and no explicit date or clear_filter requested
         $tanggal = $request->input('tanggal');
+        $hasTodayScheduled = false;
+        if ($selectedTahun !== 'all' && $selectedTahun !== '') {
+            $hasTodayScheduled = \App\Models\MabaData::whereHas('tahunMaba', function ($q) use ($selectedTahun) {
+                $q->where('tahun', (int)$selectedTahun);
+            })->whereDate('tanggal_jadwal', date('Y-m-d'))->exists();
+        }
+
+        if ($tanggal === null && !$request->has('clear_filter') && $hasTodayScheduled) {
+            $tanggal = date('Y-m-d');
+        }
+
+        $sesi = $request->input('sesi');
+        $prodi = $request->input('prodi');
+        $status_email = $request->input('status_email');
+        $nomor_surat = $request->input('nomor_surat');
         $kesimpulan = $request->input('kesimpulan');
         $fakultas = $request->input('fakultas');
-        $jenis_kelamin = $request->input('jenis_kelamin');
-        $status_email = $request->input('status_email');
-        $riwayat_medis = $request->input('riwayat_medis');
-        $nomor_surat = $request->input('nomor_surat');
-        
-        $query = Pemeriksaan::query();
 
-        if ($selectedTahun !== '' && $selectedTahun !== 'all') {
-            $query->where('tahun_masuk', (int)$selectedTahun);
+        // Counts for tabs
+        $countUnexaminedQuery = \App\Models\MabaData::where('status_biodata', 'TERVERIFIKASI')
+            ->doesntHave('pemeriksaan');
+        if ($selectedTahun !== 'all' && $selectedTahun !== '') {
+            $countUnexaminedQuery->whereHas('tahunMaba', fn($q) => $q->where('tahun', (int)$selectedTahun));
         }
+        $countBelumDiperiksa = $countUnexaminedQuery->count();
 
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('nik', 'like', "%{$search}%")
-                  ->orWhere('nomor_surat', 'like', "%{$search}%");
-            });
+        $countExaminedQuery = Pemeriksaan::query();
+        if ($selectedTahun !== 'all' && $selectedTahun !== '') {
+            $countExaminedQuery->where('tahun_masuk', (int)$selectedTahun);
         }
+        $countSudahDiperiksa = $countExaminedQuery->count();
 
-        if ($nomor_surat) {
-            $query->where('nomor_surat', 'like', "%{$nomor_surat}%");
+        if ($status_antrean === null) {
+            $status_antrean = ($countBelumDiperiksa > 0) ? 'belum_diperiksa' : 'selesai';
         }
 
-        if ($tanggal) {
-            $query->whereDate('created_at', '=', $tanggal);
-        }
-        if ($kesimpulan) {
-            $query->where('kesimpulan', $kesimpulan);
-        }
-        if ($fakultas) {
-            $query->where('fakultas', 'like', "%{$fakultas}%");
-        }
-        if ($jenis_kelamin) {
-            $query->where('jenis_kelamin', $jenis_kelamin);
-        }
-        if ($status_email) {
-            $query->where('status_pengiriman', $status_email);
-        }
-        if ($riwayat_medis) {
-            if ($riwayat_medis == 'Ada') {
-                $query->where(function($q) {
-                    $q->where('riwayat_penyakit_kronis', '!=', 'Disangkal')
-                      ->orWhere('riwayat_penggunaan_obat', '!=', 'Disangkal')
-                      ->orWhere('riwayat_alergi', '!=', 'Disangkal');
-                });
-            } elseif ($riwayat_medis == 'Tidak Ada') {
-                $query->where(function($q) {
-                    $q->where('riwayat_penyakit_kronis', 'Disangkal')
-                      ->where('riwayat_penggunaan_obat', 'Disangkal')
-                      ->where('riwayat_alergi', 'Disangkal');
+        // 1. ANTREAN BELUM DIPERIKSA
+        $unexaminedQueue = null;
+        if ($status_antrean === 'belum_diperiksa' || $status_antrean === 'all') {
+            $unexaminedQuery = \App\Models\MabaData::where('status_biodata', 'TERVERIFIKASI')
+                ->doesntHave('pemeriksaan')
+                ->with(['tahunMaba']);
+
+            if ($selectedTahun !== 'all' && $selectedTahun !== '') {
+                $unexaminedQuery->whereHas('tahunMaba', fn($q) => $q->where('tahun', (int)$selectedTahun));
+            }
+
+            if ($search) {
+                $unexaminedQuery->where(function ($q) use ($search) {
+                    $q->where('nama_lengkap', 'like', "%{$search}%")
+                      ->orWhere('nama_biro', 'like', "%{$search}%")
+                      ->orWhere('nik', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
                 });
             }
+
+            if ($tanggal) {
+                $unexaminedQuery->whereDate('tanggal_jadwal', $tanggal);
+            }
+
+            if ($sesi) {
+                $unexaminedQuery->where('sesi_jadwal', $sesi);
+            }
+
+            if ($prodi) {
+                $unexaminedQuery->where(function ($q) use ($prodi) {
+                    $q->where('program_studi', 'like', "%{$prodi}%")
+                      ->orWhere('program_studi_biro', 'like', "%{$prodi}%");
+                });
+            }
+
+            if ($fakultas) {
+                $unexaminedQuery->where('fakultas', 'like', "%{$fakultas}%");
+            }
+
+            $unexaminedQueue = $unexaminedQuery->orderBy('tanggal_jadwal', 'asc')
+                ->orderBy('sesi_jadwal', 'asc')
+                ->orderBy('id', 'asc')
+                ->paginate(15, ['*'], 'page_maba')
+                ->appends($request->all());
         }
 
-        $pemeriksaans = $query->orderBy('id', 'desc')->paginate(10)->appends($request->all());
+        // 2. PEMERIKSAAN SELESAI
+        $pemeriksaans = null;
+        if ($status_antrean === 'selesai' || $status_antrean === 'all') {
+            $query = Pemeriksaan::with('mabaData');
+
+            if ($selectedTahun !== '' && $selectedTahun !== 'all') {
+                $query->where('tahun_masuk', (int)$selectedTahun);
+            }
+
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%")
+                      ->orWhere('nik', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('nomor_surat', 'like', "%{$search}%")
+                      ->orWhereHas('mabaData', function ($mq) use ($search) {
+                          $mq->where('nama_lengkap', 'like', "%{$search}%")
+                             ->orWhere('nama_biro', 'like', "%{$search}%");
+                      });
+                });
+            }
+
+            if ($nomor_surat) {
+                $query->where('nomor_surat', 'like', "%{$nomor_surat}%");
+            }
+
+            if ($tanggal) {
+                $query->where(function ($q) use ($tanggal) {
+                    $q->whereDate('created_at', $tanggal)
+                      ->orWhereHas('mabaData', function ($mq) use ($tanggal) {
+                          $mq->whereDate('tanggal_jadwal', $tanggal);
+                      });
+                });
+            }
+
+            if ($sesi) {
+                $query->whereHas('mabaData', function ($mq) use ($sesi) {
+                    $mq->where('sesi_jadwal', $sesi);
+                });
+            }
+
+            if ($prodi) {
+                $query->where(function ($q) use ($prodi) {
+                    $q->where('fakultas', 'like', "%{$prodi}%")
+                      ->orWhereHas('mabaData', function ($mq) use ($prodi) {
+                          $mq->where('program_studi', 'like', "%{$prodi}%")
+                             ->orWhere('program_studi_biro', 'like', "%{$prodi}%");
+                      });
+                });
+            }
+
+            if ($kesimpulan) {
+                $query->where('kesimpulan', $kesimpulan);
+            }
+            if ($fakultas) {
+                $query->where('fakultas', 'like', "%{$fakultas}%");
+            }
+            if ($status_email) {
+                $query->where('status_pengiriman', $status_email);
+            }
+
+            $pemeriksaans = $query->orderBy('id', 'desc')->paginate(15, ['*'], 'page_exam')->appends($request->all());
+        }
+
+        // Dropdown values for filters
+        $availableProdis = \App\Models\MabaData::whereNotNull('program_studi_biro')
+            ->select('program_studi_biro')
+            ->distinct()
+            ->pluck('program_studi_biro')
+            ->toArray();
+        sort($availableProdis);
+
+        $availableSesi = \App\Models\MabaData::whereNotNull('sesi_jadwal')
+            ->select('sesi_jadwal')
+            ->distinct()
+            ->pluck('sesi_jadwal')
+            ->toArray();
+        sort($availableSesi);
 
         return view('pemeriksaan.index', compact(
-            'pemeriksaans', 'search', 'tanggal', 'kesimpulan', 'fakultas', 
-            'jenis_kelamin', 'status_email', 'riwayat_medis', 'nomor_surat',
-            'availableYears', 'selectedTahun', 'activeYear'
+            'pemeriksaans', 'unexaminedQueue', 'status_antrean', 'search', 'tanggal', 'sesi', 'prodi',
+            'kesimpulan', 'fakultas', 'status_email', 'nomor_surat',
+            'availableYears', 'selectedTahun', 'activeYear',
+            'countBelumDiperiksa', 'countSudahDiperiksa',
+            'availableProdis', 'availableSesi'
         ));
     }
 
@@ -151,16 +259,46 @@ class PemeriksaanController extends Controller
 
     public function create(Request $request)
     {
-        $tahunContext = \App\Services\TahunMabaService::getActiveYearInt();
+        $activeYear = \App\Services\TahunMabaService::getActiveYearInt();
+        
+        $mabaData = null;
+        $mabaId = $request->input('maba_id') ?? $request->input('maba_data_id');
+        if ($mabaId) {
+            $mabaData = \App\Models\MabaData::with('tahunMaba')->find($mabaId);
+            if (!$mabaData) {
+                return redirect()->route('pemeriksaan.index')
+                    ->with('error', 'Data Maba tidak ditemukan.');
+            }
+
+            // Cross-year isolation check
+            $mabaYear = $mabaData->tahunMaba ? (int)$mabaData->tahunMaba->tahun : $activeYear;
+            if ($mabaYear !== $activeYear) {
+                return redirect()->route('pemeriksaan.index')
+                    ->with('error', 'Akses data Maba dari tahun lain tidak diizinkan.');
+            }
+
+            if ($mabaData->pemeriksaan()->exists()) {
+                return redirect()->route('pemeriksaan.index')
+                    ->with('error', 'Mahasiswa ini sudah memiliki data pemeriksaan kesehatan.');
+            }
+
+            if (!in_array($mabaData->status_biodata, ['TERVERIFIKASI', 'PEMERIKSAAN_SELESAI'])) {
+                return redirect()->route('admin.maba-verifikasi.index')
+                    ->with('error', 'Data Maba belum terverifikasi oleh Operator.');
+            }
+        }
+
+        $tahunContext = $activeYear;
         $estimated_nomor = $this->generateNomorSurat(false, $tahunContext);
 
-        return view('pemeriksaan.create', compact('estimated_nomor', 'tahunContext'));
+        return view('pemeriksaan.create', compact('estimated_nomor', 'tahunContext', 'mabaData'));
     }
 
     public function store(Request $request)
     {
         $currentYear = (int)date('Y');
         $validated = $request->validate([
+            'maba_data_id' => 'nullable|integer|exists:maba_datas,id',
             'tahun_masuk' => 'nullable|integer|min:2000|max:' . ($currentYear + 10),
             'nomor_surat' => 'nullable|string|max:255',
             'nama' => 'required|string|max:255',
@@ -188,9 +326,45 @@ class PemeriksaanController extends Controller
             'kesimpulan' => 'nullable|string|max:255',
         ]);
 
-        // FORCE SERVER-SIDE ACTIVE YEAR CONTEXT FOR NEW CREATION (IGNORING CLIENT REQUEST MANIPULATION)
         $activeYear = \App\Services\TahunMabaService::getActiveYearInt();
         $validated['tahun_masuk'] = $activeYear;
+
+        // If maba_data_id is present, enforce server-side authority & pre-fill identity from MabaData
+        if (!empty($validated['maba_data_id'])) {
+            $mabaData = \App\Models\MabaData::with('tahunMaba')->find($validated['maba_data_id']);
+            if (!$mabaData) {
+                return back()->withInput()->withErrors(['maba_data_id' => 'Data Maba tidak ditemukan.']);
+            }
+
+            // Cross-year isolation check
+            $mabaYear = $mabaData->tahunMaba ? (int)$mabaData->tahunMaba->tahun : $activeYear;
+            if ($mabaYear !== $activeYear) {
+                return redirect()->route('pemeriksaan.index')
+                    ->with('error', 'Akses data Maba dari tahun lain tidak diizinkan.');
+            }
+
+            if (!in_array($mabaData->status_biodata, ['TERVERIFIKASI', 'PEMERIKSAAN_SELESAI'])) {
+                return redirect()->route('admin.maba-verifikasi.index')
+                    ->with('error', 'Data Maba belum terverifikasi oleh Operator.');
+            }
+
+            if ($mabaData->pemeriksaan()->exists()) {
+                return back()->withInput()->withErrors(['maba_data_id' => 'Mahasiswa ini sudah memiliki data pemeriksaan kesehatan.']);
+            }
+
+            // Server-side lock identity fields from MabaData (readonly in UI)
+            $validated['nama'] = $mabaData->nama_lengkap ?? $mabaData->nama_biro;
+            $validated['nik'] = $mabaData->nik;
+            $validated['email'] = $mabaData->email;
+            $validated['tempat_lahir'] = $mabaData->tempat_lahir;
+            $validated['tanggal_lahir'] = $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : null;
+            $validated['jenis_kelamin'] = $mabaData->jenis_kelamin;
+            $validated['agama'] = $mabaData->agama;
+            $validated['fakultas'] = $mabaData->fakultas;
+            $validated['pekerjaan'] = $mabaData->pekerjaan;
+            $validated['alamat'] = $mabaData->alamat;
+            $validated['umur'] = $mabaData->umur;
+        }
 
         $maxAttempts = 5;
         $attempt = 0;
@@ -201,7 +375,14 @@ class PemeriksaanController extends Controller
             try {
                 $pemeriksaan = DB::transaction(function () use ($validated, $activeYear) {
                     $validated['nomor_surat'] = $this->generateNomorSurat(true, $activeYear);
-                    return Pemeriksaan::create($validated);
+                    $record = Pemeriksaan::create($validated);
+                    
+                    if (!empty($validated['maba_data_id'])) {
+                        \App\Models\MabaData::where('id', $validated['maba_data_id'])
+                            ->update(['status_biodata' => 'PEMERIKSAAN_SELESAI']);
+                    }
+
+                    return $record;
                 }, 3);
                 break;
             } catch (\Illuminate\Database\UniqueConstraintViolationException | \Illuminate\Database\QueryException $e) {
@@ -218,6 +399,13 @@ class PemeriksaanController extends Controller
 
     public function show(Pemeriksaan $pemeriksaan)
     {
+        if (request()->has('tahun_masuk')) {
+            $targetYear = (int)request('tahun_masuk');
+            if ($pemeriksaan->tahun_masuk !== $targetYear && $targetYear !== 0) {
+                return redirect()->route('pemeriksaan.index')
+                    ->with('error', 'Pemeriksaan tidak ditemukan untuk tahun context yang dipilih.');
+            }
+        }
         return view('pemeriksaan.show', compact('pemeriksaan'));
     }
 
@@ -273,11 +461,23 @@ class PemeriksaanController extends Controller
 
     public function previewPdf(Pemeriksaan $pemeriksaan)
     {
+        if (request()->has('tahun_masuk')) {
+            $targetYear = (int)request('tahun_masuk');
+            if ($pemeriksaan->tahun_masuk !== $targetYear && $targetYear !== 0) {
+                abort(403, 'Akses ditolak untuk tahun context yang dipilih.');
+            }
+        }
         return view('pemeriksaan.preview', compact('pemeriksaan'));
     }
 
     public function downloadPdf(Pemeriksaan $pemeriksaan)
     {
+        if (request()->has('tahun_masuk')) {
+            $targetYear = (int)request('tahun_masuk');
+            if ($pemeriksaan->tahun_masuk !== $targetYear && $targetYear !== 0) {
+                abort(403, 'Akses ditolak untuk tahun context yang dipilih.');
+            }
+        }
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pemeriksaan.pdf', compact('pemeriksaan'))
             ->setPaper('a4', 'portrait');
         
@@ -288,6 +488,15 @@ class PemeriksaanController extends Controller
 
     public function sendEmail(Pemeriksaan $pemeriksaan)
     {
+        if (request()->has('tahun_masuk')) {
+            $targetYear = (int)request('tahun_masuk');
+            if ($pemeriksaan->tahun_masuk !== $targetYear && $targetYear !== 0) {
+                $msg = 'Akses ditolak untuk tahun context yang dipilih.';
+                if (request()->wantsJson()) return response()->json(['success' => false, 'message' => $msg], 403);
+                return back()->withErrors(['email' => $msg]);
+            }
+        }
+
         if (!$pemeriksaan->email) {
             $msg = 'Alamat email mahasiswa tidak tersedia.';
             if (request()->wantsJson()) return response()->json(['success' => false, 'message' => $msg], 400);

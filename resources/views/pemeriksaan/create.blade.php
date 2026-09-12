@@ -12,14 +12,34 @@
 
     <form action="{{ route('pemeriksaan.store') }}" method="POST">
         @csrf
+        @if(isset($mabaData) && $mabaData)
+            <input type="hidden" name="maba_data_id" value="{{ $mabaData->id }}">
+            <div class="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+                        ✓
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 text-sm">Terhubung dengan Data Maba Terverifikasi</h4>
+                        <p class="text-xs text-emerald-700">{{ $mabaData->nama_lengkap }} ({{ $mabaData->program_studi_biro }}) - Data biodata diisi secara otomatis.</p>
+                    </div>
+                </div>
+                <span class="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-full">TERVERIFIKASI</span>
+            </div>
+        @endif
 
         <!-- SECTION 1: Menerangkan Bahwa -->
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-gray-100 mb-8">
-            <div class="border-b border-gray-100 bg-gray-50/50 px-8 py-5">
+            <div class="border-b border-gray-100 bg-gray-50/50 px-8 py-5 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-gray-800 flex items-center">
                     <svg class="w-5 h-5 text-emerald-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    Informasi Identitas
+                    Informasi Identitas {{ isset($mabaData) && $mabaData ? '(Data Maba Readonly)' : '' }}
                 </h3>
+                @if(isset($mabaData) && $mabaData)
+                    <span class="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg">
+                        *Untuk mengedit identitas, gunakan Data Maba → Edit Data
+                    </span>
+                @endif
             </div>
             <div class="p-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
@@ -50,68 +70,76 @@
 
                     <div>
                         <label for="nama" class="block mb-2 text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" name="nama" id="nama" value="{{ old('nama') }}" required placeholder="Masukkan nama lengkap" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="text" name="nama" id="nama" value="{{ old('nama', isset($mabaData) ? ($mabaData->nama_lengkap ?? $mabaData->nama_biro) : '') }}" required placeholder="Masukkan nama lengkap" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
 
                     <div>
                         <label for="nik" class="block mb-2 text-sm font-medium text-gray-700">NIK</label>
-                        <input type="text" name="nik" id="nik" value="{{ old('nik') }}" placeholder="Nomor Induk Kependudukan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="text" name="nik" id="nik" value="{{ old('nik', $mabaData->nik ?? '') }}" placeholder="Nomor Induk Kependudukan" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
 
                     <div>
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Email Mahasiswa <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" id="email" value="{{ old('email') }}" required oninput="this.value = this.value.toLowerCase()" placeholder="email@contoh.com" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="email" name="email" id="email" value="{{ old('email', $mabaData->email ?? '') }}" required oninput="this.value = this.value.toLowerCase()" placeholder="email@contoh.com" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
 
                     <div class="col-span-1 md:col-span-2">
-                        <label class="block mb-2 text-sm font-medium text-gray-700">Tempat Lahir</label>
+                        <label class="block mb-2 text-sm font-medium text-gray-700">Tempat & Tanggal Lahir</label>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <input type="text" name="tempat_lahir" id="tempat_lahir" value="{{ old('tempat_lahir') }}" placeholder="Kota kelahiran" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:w-1/2 p-3 transition duration-150">
-                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ old('tanggal_lahir') }}" onchange="calculateAge()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:w-1/2 p-3 transition duration-150">
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" value="{{ old('tempat_lahir', $mabaData->tempat_lahir ?? '') }}" placeholder="Kota kelahiran" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full sm:w-1/2 p-3 transition duration-150">
+                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ old('tanggal_lahir', isset($mabaData) && $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : '') }}" onchange="calculateAge()" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full sm:w-1/2 p-3 transition duration-150">
                         </div>
                     </div>
 
                     <div>
                         <label for="umur" class="block mb-2 text-sm font-medium text-gray-700">Umur</label>
-                        <input type="number" name="umur" id="umur" value="{{ old('umur') }}" placeholder="Tahun" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="number" name="umur" id="umur" value="{{ old('umur', $mabaData->umur ?? '') }}" placeholder="Tahun" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
                     
                     <div>
                         <label for="jenis_kelamin" class="block mb-2 text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                        <x-form-select name="jenis_kelamin" id="jenis_kelamin" :value="old('jenis_kelamin')" placeholder="Pilih..." :options="[
-                            'Laki-Laki' => 'Laki-Laki',
-                            'Perempuan' => 'Perempuan'
-                        ]" />
+                        @if(isset($mabaData) && $mabaData)
+                            <input type="text" name="jenis_kelamin" id="jenis_kelamin" value="{{ old('jenis_kelamin', $mabaData->jenis_kelamin ?? '') }}" readonly class="bg-gray-100 border border-gray-300 text-gray-700 font-medium text-sm rounded-xl block w-full p-3 cursor-not-allowed">
+                        @else
+                            <x-form-select name="jenis_kelamin" id="jenis_kelamin" :value="old('jenis_kelamin', $mabaData->jenis_kelamin ?? '')" placeholder="Pilih..." :options="[
+                                'Laki-Laki' => 'Laki-Laki',
+                                'Perempuan' => 'Perempuan'
+                            ]" />
+                        @endif
                     </div>
 
                     <div>
                         <label for="agama" class="block mb-2 text-sm font-medium text-gray-700">Agama</label>
-                        <input type="text" name="agama" id="agama" value="{{ old('agama', 'Islam') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="text" name="agama" id="agama" value="{{ old('agama', $mabaData->agama ?? 'Islam') }}" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
                     
                     <div>
                         <label for="fakultas" class="block mb-2 text-sm font-medium text-gray-700">Fakultas</label>
-                        <x-form-select name="fakultas" id="fakultas" :value="old('fakultas')" placeholder="Pilih Fakultas..." :options="[
-                            'Fakultas Tarbiyah dan Keguruan' => 'Fakultas Tarbiyah dan Keguruan',
-                            'Fakultas Syariah dan Hukum' => 'Fakultas Syariah dan Hukum',
-                            'Fakultas Dakwah dan Komunikasi' => 'Fakultas Dakwah dan Komunikasi',
-                            'Fakultas Ushuluddin dan Filsafat' => 'Fakultas Ushuluddin dan Filsafat',
-                            'Fakultas Adab dan Humaniora' => 'Fakultas Adab dan Humaniora',
-                            'Fakultas Ekonomi dan Bisnis Islam' => 'Fakultas Ekonomi dan Bisnis Islam',
-                            'Fakultas Sains dan Teknologi' => 'Fakultas Sains dan Teknologi',
-                            'Fakultas Psikologi' => 'Fakultas Psikologi',
-                            'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' => 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
-                        ]" />
+                        @if(isset($mabaData) && $mabaData)
+                            <input type="text" name="fakultas" id="fakultas" value="{{ old('fakultas', $mabaData->fakultas ?? '') }}" readonly class="bg-gray-100 border border-gray-300 text-gray-700 font-medium text-sm rounded-xl block w-full p-3 cursor-not-allowed">
+                        @else
+                            <x-form-select name="fakultas" id="fakultas" :value="old('fakultas', $mabaData->fakultas ?? '')" placeholder="Pilih Fakultas..." :options="[
+                                'Fakultas Tarbiyah dan Keguruan' => 'Fakultas Tarbiyah dan Keguruan',
+                                'Fakultas Syariah dan Hukum' => 'Fakultas Syariah dan Hukum',
+                                'Fakultas Dakwah dan Komunikasi' => 'Fakultas Dakwah dan Komunikasi',
+                                'Fakultas Ushuluddin dan Filsafat' => 'Fakultas Ushuluddin dan Filsafat',
+                                'Fakultas Adab dan Humaniora' => 'Fakultas Adab dan Humaniora',
+                                'Fakultas Ekonomi dan Bisnis Islam' => 'Fakultas Ekonomi dan Bisnis Islam',
+                                'Fakultas Sains dan Teknologi' => 'Fakultas Sains dan Teknologi',
+                                'Fakultas Psikologi' => 'Fakultas Psikologi',
+                                'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' => 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
+                            ]" />
+                        @endif
                     </div>
 
                     <div>
                         <label for="pekerjaan" class="block mb-2 text-sm font-medium text-gray-700">Pekerjaan</label>
-                        <input type="text" name="pekerjaan" id="pekerjaan" value="{{ old('pekerjaan', 'Mahasiswa') }}" placeholder="Contoh: Mahasiswa, Dosen, PNS, dll" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="text" name="pekerjaan" id="pekerjaan" value="{{ old('pekerjaan', $mabaData->pekerjaan ?? 'Mahasiswa') }}" placeholder="Contoh: Mahasiswa, Dosen, PNS, dll" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
 
                     <div class="col-span-2">
                         <label for="alamat" class="block mb-2 text-sm font-medium text-gray-700">Alamat Lengkap</label>
-                        <input type="text" name="alamat" id="alamat" value="{{ old('alamat') }}" placeholder="Jalan, RT/RW, Desa, Kecamatan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition duration-150">
+                        <input type="text" name="alamat" id="alamat" value="{{ old('alamat', $mabaData->alamat ?? '') }}" placeholder="Jalan, RT/RW, Desa, Kecamatan" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full p-3 transition duration-150">
                     </div>
                 </div>
             </div>

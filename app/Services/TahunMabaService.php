@@ -30,7 +30,7 @@ class TahunMabaService
      */
     public static function getActiveYear(): ?TahunMaba
     {
-        return TahunMaba::where('is_active', true)->first();
+        return TahunMaba::where('is_active', true)->orWhere('is_active', 1)->first();
     }
 
     /**

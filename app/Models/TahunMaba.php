@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TahunMaba extends Model
 {
@@ -33,5 +34,13 @@ class TahunMaba extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Relationship to MabaData records under this batch.
+     */
+    public function mabaDatas(): HasMany
+    {
+        return $this->hasMany(MabaData::class, 'tahun_maba_id');
     }
 }
