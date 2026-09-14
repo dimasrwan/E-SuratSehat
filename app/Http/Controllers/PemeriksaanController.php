@@ -43,11 +43,23 @@ class PemeriksaanController extends Controller
         }
 
         $sesi = $request->input('sesi');
-        $prodi = $request->input('prodi');
+        $prodiInput = $request->input('prodi', $request->input('program_studi_id'));
         $status_email = $request->input('status_email');
         $nomor_surat = $request->input('nomor_surat');
         $kesimpulan = $request->input('kesimpulan');
         $fakultas = $request->input('fakultas');
+
+        // Resolve prodi search string and model if numeric ID or name string is passed
+        $prodi = $prodiInput;
+        $prodiName = null;
+        if (!empty($prodiInput)) {
+            if (is_numeric($prodiInput)) {
+                $prodiModel = \App\Models\ProgramStudi::where('is_active', true)->find((int)$prodiInput);
+                $prodiName = $prodiModel ? $prodiModel->nama : '__INVALID_PRODI__';
+            } else {
+                $prodiName = $prodiInput;
+            }
+        }
 
         // Counts for tabs
         $countUnexaminedQuery = \App\Models\MabaData::where('status_biodata', 'TERVERIFIKASI')
@@ -55,11 +67,80 @@ class PemeriksaanController extends Controller
         if ($selectedTahun !== 'all' && $selectedTahun !== '') {
             $countUnexaminedQuery->whereHas('tahunMaba', fn($q) => $q->where('tahun', (int)$selectedTahun));
         }
+        if ($search) {
+            $countUnexaminedQuery->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('nama_biro', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        if ($tanggal) {
+            $countUnexaminedQuery->whereDate('tanggal_jadwal', $tanggal);
+        }
+        if ($sesi) {
+            $countUnexaminedQuery->where('sesi_jadwal', $sesi);
+        }
+        if ($prodiName) {
+            $countUnexaminedQuery->where(function ($q) use ($prodiName) {
+                $q->whereRaw('LOWER(program_studi) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                  ->orWhereRaw('LOWER(program_studi_biro) LIKE ?', ['%' . strtolower($prodiName) . '%']);
+            });
+        }
+        if ($fakultas) {
+            $countUnexaminedQuery->where('fakultas', 'like', "%{$fakultas}%");
+        }
         $countBelumDiperiksa = $countUnexaminedQuery->count();
 
         $countExaminedQuery = Pemeriksaan::query();
         if ($selectedTahun !== 'all' && $selectedTahun !== '') {
             $countExaminedQuery->where('tahun_masuk', (int)$selectedTahun);
+        }
+        if ($search) {
+            $countExaminedQuery->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('nomor_surat', 'like', "%{$search}%")
+                  ->orWhereHas('mabaData', function ($mq) use ($search) {
+                      $mq->where('nama_lengkap', 'like', "%{$search}%")
+                         ->orWhere('nama_biro', 'like', "%{$search}%");
+                  });
+            });
+        }
+        if ($nomor_surat) {
+            $countExaminedQuery->where('nomor_surat', 'like', "%{$nomor_surat}%");
+        }
+        if ($tanggal) {
+            $countExaminedQuery->where(function ($q) use ($tanggal) {
+                $q->whereDate('created_at', $tanggal)
+                  ->orWhereHas('mabaData', function ($mq) use ($tanggal) {
+                      $mq->whereDate('tanggal_jadwal', $tanggal);
+                  });
+            });
+        }
+        if ($sesi) {
+            $countExaminedQuery->whereHas('mabaData', function ($mq) use ($sesi) {
+                $mq->where('sesi_jadwal', $sesi);
+            });
+        }
+        if ($prodiName) {
+            $countExaminedQuery->where(function ($q) use ($prodiName) {
+                $q->whereRaw('LOWER(pekerjaan) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                  ->orWhereHas('mabaData', function ($mq) use ($prodiName) {
+                      $mq->whereRaw('LOWER(program_studi) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                        ->orWhereRaw('LOWER(program_studi_biro) LIKE ?', ['%' . strtolower($prodiName) . '%']);
+                  });
+            });
+        }
+        if ($kesimpulan) {
+            $countExaminedQuery->where('kesimpulan', $kesimpulan);
+        }
+        if ($fakultas) {
+            $countExaminedQuery->where('fakultas', 'like', "%{$fakultas}%");
+        }
+        if ($status_email) {
+            $countExaminedQuery->where('status_pengiriman', $status_email);
         }
         $countSudahDiperiksa = $countExaminedQuery->count();
 
@@ -95,10 +176,10 @@ class PemeriksaanController extends Controller
                 $unexaminedQuery->where('sesi_jadwal', $sesi);
             }
 
-            if ($prodi) {
-                $unexaminedQuery->where(function ($q) use ($prodi) {
-                    $q->where('program_studi', 'like', "%{$prodi}%")
-                      ->orWhere('program_studi_biro', 'like', "%{$prodi}%");
+            if ($prodiName) {
+                $unexaminedQuery->where(function ($q) use ($prodiName) {
+                    $q->whereRaw('LOWER(program_studi) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                      ->orWhereRaw('LOWER(program_studi_biro) LIKE ?', ['%' . strtolower($prodiName) . '%']);
                 });
             }
 
@@ -154,12 +235,12 @@ class PemeriksaanController extends Controller
                 });
             }
 
-            if ($prodi) {
-                $query->where(function ($q) use ($prodi) {
-                    $q->where('fakultas', 'like', "%{$prodi}%")
-                      ->orWhereHas('mabaData', function ($mq) use ($prodi) {
-                          $mq->where('program_studi', 'like', "%{$prodi}%")
-                             ->orWhere('program_studi_biro', 'like', "%{$prodi}%");
+            if ($prodiName) {
+                $query->where(function ($q) use ($prodiName) {
+                    $q->whereRaw('LOWER(pekerjaan) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                      ->orWhereHas('mabaData', function ($mq) use ($prodiName) {
+                          $mq->whereRaw('LOWER(program_studi) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                            ->orWhereRaw('LOWER(program_studi_biro) LIKE ?', ['%' . strtolower($prodiName) . '%']);
                       });
                 });
             }
@@ -177,13 +258,13 @@ class PemeriksaanController extends Controller
             $pemeriksaans = $query->orderBy('id', 'desc')->paginate(15, ['*'], 'page_exam')->appends($request->all());
         }
 
-        // Dropdown values for filters
-        $availableProdis = \App\Models\MabaData::whereNotNull('program_studi_biro')
-            ->select('program_studi_biro')
-            ->distinct()
-            ->pluck('program_studi_biro')
-            ->toArray();
-        sort($availableProdis);
+        // Master Data Fakultas & Program Studi for grouped searchable dropdown
+        $masterFakultas = \App\Models\Fakultas::where('is_active', true)
+            ->with(['programStudi' => function ($q) {
+                $q->where('is_active', true)->orderBy('nama', 'asc');
+            }])
+            ->orderBy('nama', 'asc')
+            ->get();
 
         $availableSesi = \App\Models\MabaData::whereNotNull('sesi_jadwal')
             ->select('sesi_jadwal')
@@ -197,7 +278,7 @@ class PemeriksaanController extends Controller
             'kesimpulan', 'fakultas', 'status_email', 'nomor_surat',
             'availableYears', 'selectedTahun', 'activeYear',
             'countBelumDiperiksa', 'countSudahDiperiksa',
-            'availableProdis', 'availableSesi'
+            'masterFakultas', 'availableSesi'
         ));
     }
 
@@ -611,6 +692,7 @@ class PemeriksaanController extends Controller
             }
         }
 
+        $prodiInput = $request->input('prodi', $request->input('program_studi_id'));
         $search = $request->input('search');
         $tanggal_awal = $request->input('tanggal_awal');
         $tanggal_akhir = $request->input('tanggal_akhir');
@@ -620,11 +702,31 @@ class PemeriksaanController extends Controller
         $status_email = $request->input('status_email');
         $riwayat_medis = $request->input('riwayat_medis');
         $nomor_surat = $request->input('nomor_surat');
+
+        $prodiName = null;
+        if (!empty($prodiInput)) {
+            if (is_numeric($prodiInput)) {
+                $prodiModel = \App\Models\ProgramStudi::where('is_active', true)->find((int)$prodiInput);
+                $prodiName = $prodiModel ? $prodiModel->nama : '__INVALID_PRODI__';
+            } else {
+                $prodiName = $prodiInput;
+            }
+        }
         
         $query = Pemeriksaan::query();
 
         if ($tahun_masuk !== '' && $tahun_masuk !== 'all') {
             $query->where('tahun_masuk', (int)$tahun_masuk);
+        }
+
+        if ($prodiName) {
+            $query->where(function ($q) use ($prodiName) {
+                $q->whereRaw('LOWER(pekerjaan) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                  ->orWhereHas('mabaData', function ($mq) use ($prodiName) {
+                      $mq->whereRaw('LOWER(program_studi) LIKE ?', ['%' . strtolower($prodiName) . '%'])
+                        ->orWhereRaw('LOWER(program_studi_biro) LIKE ?', ['%' . strtolower($prodiName) . '%']);
+                  });
+            });
         }
 
         if ($search) {

@@ -76,7 +76,9 @@ class PortalMabaController extends Controller
             return redirect()->route('portal.index')->with('error', 'Sesi pengisian telah berakhir. Silakan cari data Anda kembali.');
         }
 
-        return view('portal.form', compact('claimedMaba'));
+        $fakultas = \App\Models\Fakultas::where('is_active', true)->orderBy('nama', 'asc')->get();
+
+        return view('portal.form', compact('claimedMaba', 'fakultas'));
     }
 
     /**

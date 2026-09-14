@@ -125,17 +125,14 @@
                 <div>
                     <label for="fakultas" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">9. Fakultas <span class="text-rose-500">*</span></label>
                     @php
-                        $fakultasList = [
-                            'Fakultas Tarbiyah dan Keguruan' => 'Fakultas Tarbiyah dan Keguruan',
-                            'Fakultas Syariah dan Hukum' => 'Fakultas Syariah dan Hukum',
-                            'Fakultas Dakwah dan Komunikasi' => 'Fakultas Dakwah dan Komunikasi',
-                            'Fakultas Ushuluddin dan Filsafat' => 'Fakultas Ushuluddin dan Filsafat',
-                            'Fakultas Adab dan Humaniora' => 'Fakultas Adab dan Humaniora',
-                            'Fakultas Ekonomi dan Bisnis Islam' => 'Fakultas Ekonomi dan Bisnis Islam',
-                            'Fakultas Sains dan Teknologi' => 'Fakultas Sains dan Teknologi',
-                            'Fakultas Psikologi' => 'Fakultas Psikologi',
-                            'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' => 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
-                        ];
+                        if (isset($fakultas) && count($fakultas) > 0) {
+                            $fakultasList = [];
+                            foreach ($fakultas as $f) {
+                                $fakultasList[$f->nama] = $f->nama;
+                            }
+                        } else {
+                            $fakultasList = \App\Models\Fakultas::where('is_active', true)->orderBy('nama', 'asc')->pluck('nama', 'nama')->toArray();
+                        }
                     @endphp
                     <x-form-select name="fakultas" id="fakultas" :value="old('fakultas', $claimedMaba->fakultas)" placeholder="-- Pilih Fakultas --" :options="$fakultasList" required />
                 </div>

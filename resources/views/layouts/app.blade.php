@@ -79,6 +79,9 @@
                                 <a href="{{ route('admin.tahun-maba.index') }}" class="flex items-center px-4 py-2 text-xs font-medium hover:bg-emerald-50 hover:text-emerald-900 {{ request()->is('admin/tahun-maba*') ? 'bg-emerald-50 font-bold text-emerald-900' : '' }}">
                                     Manajemen Tahun Maba
                                 </a>
+                                <a href="{{ route('admin.fakultas-prodi.index') }}" class="flex items-center px-4 py-2 text-xs font-medium hover:bg-emerald-50 hover:text-emerald-900 {{ request()->is('admin/fakultas-prodi*') ? 'bg-emerald-50 font-bold text-emerald-900' : '' }}">
+                                    Fakultas & Program Studi
+                                </a>
                                 <a href="{{ route('admin.import.index') }}" class="flex items-center px-4 py-2 text-xs font-medium hover:bg-emerald-50 hover:text-emerald-900 {{ request()->is('admin/import*') ? 'bg-emerald-50 font-bold text-emerald-900' : '' }}">
                                     Import Data Biro
                                 </a>
@@ -154,6 +157,7 @@
                 <span class="px-3 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Manajemen</span>
                 <a href="{{ route('admin.users.index') }}" class="block px-3 py-1 text-emerald-200 hover:bg-emerald-800/60 rounded">Manajemen Pengguna</a>
                 <a href="{{ route('admin.tahun-maba.index') }}" class="block px-3 py-1 text-emerald-200 hover:bg-emerald-800/60 rounded">Manajemen Tahun Maba</a>
+                <a href="{{ route('admin.fakultas-prodi.index') }}" class="block px-3 py-1 text-emerald-200 hover:bg-emerald-800/60 rounded">Fakultas & Program Studi</a>
                 <a href="{{ route('admin.import.index') }}" class="block px-3 py-1 text-emerald-200 hover:bg-emerald-800/60 rounded">Import Data Biro</a>
             </div>
             @endif
@@ -230,6 +234,10 @@
                         trigger.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
                     }
 
+                    const searchInput = wrapper.querySelector('.custom-prodi-search-input');
+                    const groupHeaders = wrapper.querySelectorAll('.custom-prodi-group-header');
+                    const noResults = wrapper.querySelector('.custom-prodi-no-results');
+
                     function openMenu() {
                         // Close all other custom select menus first
                         document.querySelectorAll('.custom-select-menu').forEach(m => {
@@ -249,6 +257,73 @@
                         trigger.setAttribute('aria-expanded', 'true');
                         if (chevron) chevron.classList.add('rotate-180');
                         trigger.classList.add('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+
+                        if (searchInput) {
+                            searchInput.value = '';
+                            filterProdiOptions('');
+                            setTimeout(() => searchInput.focus(), 50);
+                        }
+                    }
+
+                    function filterProdiOptions(query) {
+                        const q = (query || '').toLowerCase().trim();
+                        let totalMatched = 0;
+                        const visibleFakultasIds = new Set();
+
+                        options.forEach(opt => {
+                            const text = (opt.getAttribute('data-search-text') || opt.getAttribute('data-label') || '').toLowerCase();
+                            const val = opt.getAttribute('data-value');
+                            const fId = opt.getAttribute('data-fakultas-id');
+
+                            // Default option (Semua Program Studi) is always visible unless query is typed
+                            if (val === '') {
+                                if (q === '') {
+                                    opt.classList.remove('hidden');
+                                } else {
+                                    opt.classList.add('hidden');
+                                }
+                                return;
+                            }
+
+                            if (q === '' || text.includes(q)) {
+                                opt.classList.remove('hidden');
+                                totalMatched++;
+                                if (fId) visibleFakultasIds.add(fId);
+                            } else {
+                                opt.classList.add('hidden');
+                            }
+                        });
+
+                        groupHeaders.forEach(gh => {
+                            const fId = gh.getAttribute('data-fakultas-id');
+                            if (visibleFakultasIds.has(fId)) {
+                                gh.classList.remove('hidden');
+                            } else {
+                                gh.classList.add('hidden');
+                            }
+                        });
+
+                        if (noResults) {
+                            if (totalMatched === 0 && q !== '') {
+                                noResults.classList.remove('hidden');
+                            } else {
+                                noResults.classList.add('hidden');
+                            }
+                        }
+                    }
+
+                    if (searchInput) {
+                        searchInput.addEventListener('input', function (e) {
+                            filterProdiOptions(e.target.value);
+                        });
+                        searchInput.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                        });
+                        searchInput.addEventListener('keydown', function (e) {
+                            if (e.key === 'Escape') {
+                                closeMenu();
+                            }
+                        });
                     }
 
                     trigger.addEventListener('click', function (e) {

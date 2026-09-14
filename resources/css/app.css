@@ -41,7 +41,7 @@ html::-webkit-scrollbar-button {
 /* Custom Dropdown Menu Scrollbar (Scoped specifically to .custom-select-menu) */
 .custom-select-menu {
     scrollbar-width: thin;
-    scrollbar-color: #CBD5E1 transparent;
+    scrollbar-color: #059669 transparent;
     overflow-x: hidden;
 }
 
@@ -54,12 +54,12 @@ html::-webkit-scrollbar-button {
 }
 
 .custom-select-menu::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
+    background: #10B981;
     border-radius: 9999px;
 }
 
 .custom-select-menu::-webkit-scrollbar-thumb:hover {
-    background: #94A3B8;
+    background: #047857;
 }
 
 .custom-select-menu::-webkit-scrollbar-button {

@@ -128,18 +128,10 @@ class MabaManagementController extends Controller
 
         $mabaData->load(['tahunMaba', 'pemeriksaan']);
 
-        $fakultasOptions = [
-            'Fakultas Adab dan Humaniora',
-            'Fakultas Dakwah dan Komunikasi',
-            'Fakultas Ekonomi dan Bisnis Islam',
-            'Fakultas Ilmu Tarbiyah dan Keguruan',
-            'Fakultas Syariah dan Hukum',
-            'Fakultas Ushuluddin dan Filsafat',
-            'Fakultas Sains dan Teknologi',
-            'Fakultas Psikologi',
-            'Fakultas Kedokteran dan Ilmu Kesehatan',
-            'Pascasarjana',
-        ];
+        $fakultasOptions = \App\Models\Fakultas::where('is_active', true)
+            ->orderBy('nama', 'asc')
+            ->pluck('nama')
+            ->toArray();
 
         $agamaOptions = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Khonghucu'];
         $jkOptions = ['Laki-laki', 'Perempuan'];

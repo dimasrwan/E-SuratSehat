@@ -87,6 +87,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tahun-maba/{tahunMaba}/activate', [\App\Http\Controllers\Admin\TahunMabaController::class, 'activate'])->name('tahun-maba.activate');
         Route::put('tahun-maba/{tahunMaba}/format', [\App\Http\Controllers\Admin\TahunMabaController::class, 'updateFormat'])->name('tahun-maba.updateFormat');
 
+        // Master Data Fakultas & Program Studi Routes
+        Route::get('fakultas-prodi', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'index'])->name('fakultas-prodi.index');
+        Route::post('fakultas-prodi', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'storeFakultas'])->name('fakultas-prodi.store');
+        Route::put('fakultas-prodi/{fakultas}', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'updateFakultas'])->name('fakultas-prodi.update');
+        Route::delete('fakultas-prodi/{fakultas}', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'destroyFakultas'])->name('fakultas-prodi.destroy');
+
+        Route::post('fakultas-prodi/{fakultas}/program-studi', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'storeProdi'])->name('fakultas-prodi.prodi.store');
+        Route::put('program-studi/{programStudi}', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'updateProdi'])->name('program-studi.update');
+        Route::delete('program-studi/{programStudi}', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'destroyProdi'])->name('program-studi.destroy');
+
         // Admin Import Biro Routes
         Route::get('import', [ImportBiroController::class, 'index'])->name('import.index');
         Route::post('import/preview', [ImportBiroController::class, 'preview'])->name('import.preview.store');
@@ -95,6 +105,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('import/cancel/{batch}', [ImportBiroController::class, 'cancel'])->name('import.cancel');
         Route::get('import/history', [ImportBiroController::class, 'history'])->name('import.history');
     });
+
+    Route::get('/api/fakultas/{fakultas}/program-studi', [\App\Http\Controllers\Admin\FakultasProdiController::class, 'getProdiByFakultas'])->name('api.fakultas.prodi');
 });
 
 // PUBLIC PORTAL MABA ROUTES (NO AUTH)

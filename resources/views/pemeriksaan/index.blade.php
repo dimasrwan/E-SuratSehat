@@ -109,13 +109,7 @@
                 <!-- Prodi Filter -->
                 <div>
                     <label for="prodi" class="block text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Program Studi</label>
-                    @php
-                        $prodiOptions = ['' => 'Semua Program Studi'];
-                        foreach ($availableProdis as $p) {
-                            $prodiOptions[$p] = $p;
-                        }
-                    @endphp
-                    <x-form-select name="prodi" id="prodi" :value="$prodi ?? ''" placeholder="Semua Program Studi" :options="$prodiOptions" onchange="this.closest('form').submit()" />
+                    <x-form-prodi-select name="prodi" id="prodi" :value="$prodi ?? ''" :fakultasData="$masterFakultas ?? []" placeholder="Semua Program Studi" onchange="this.closest('form').submit()" />
                 </div>
             </div>
 
