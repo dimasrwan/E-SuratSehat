@@ -12,24 +12,23 @@
         
         <!-- Filter Form -->
         <form method="GET" action="{{ route('maba.rekapJadwal') }}" class="flex flex-wrap items-center gap-3">
-            <div>
-                <label for="tahun" class="sr-only">Tahun</label>
-                <select name="tahun" id="tahun" onchange="this.form.submit()" class="text-sm rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                    @foreach($tahunList as $t)
-                        <option value="{{ $t }}" {{ (string)$tahunSelected === (string)$t ? 'selected' : '' }}>
-                            Tahun {{ $t }}
-                        </option>
-                    @endforeach
-                </select>
+            <div class="w-40">
+                @php
+                    $tahunOptions = [];
+                    foreach($tahunList as $t) {
+                        $tahunOptions[(string)$t] = 'Tahun ' . $t;
+                    }
+                @endphp
+                <x-form-select name="tahun" id="tahun" :value="(string)$tahunSelected" placeholder="Pilih Tahun" :options="$tahunOptions" onchange="this.closest('form').submit()" />
             </div>
-            <div>
-                <label for="prodi" class="sr-only">Prodi</label>
-                <select name="prodi" id="prodi" onchange="this.form.submit()" class="text-sm rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white max-w-xs">
-                    <option value="">Semua Program Studi</option>
-                    @foreach($prodiList as $p)
-                        <option value="{{ $p }}" {{ $prodiSelected === $p ? 'selected' : '' }}>{{ $p }}</option>
-                    @endforeach
-                </select>
+            <div class="w-56">
+                @php
+                    $prodiOptions = ['' => 'Semua Program Studi'];
+                    foreach($prodiList as $p) {
+                        $prodiOptions[$p] = $p;
+                    }
+                @endphp
+                <x-form-select name="prodi" id="prodi" :value="$prodiSelected" placeholder="Semua Program Studi" :options="$prodiOptions" onchange="this.closest('form').submit()" />
             </div>
         </form>
     </div>

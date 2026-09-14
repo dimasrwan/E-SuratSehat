@@ -61,14 +61,13 @@
                     <label for="tahun_maba_id" class="block text-sm font-medium text-slate-700 mb-2">
                         Target Tahun Maba <span class="text-rose-500">*</span>
                     </label>
-                    <select name="tahun_maba_id" id="tahun_maba_id" required class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 p-3 outline-none transition">
-                        <option value="">-- Pilih Tahun Maba Target --</option>
-                        @foreach($tahunMabas as $tahun)
-                            <option value="{{ $tahun->id }}" {{ old('tahun_maba_id') == $tahun->id || $tahun->is_active ? 'selected' : '' }}>
-                                Maba {{ $tahun->tahun }} {{ $tahun->is_active ? '(Aktif)' : '' }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @php
+                        $tahunImportOptions = [];
+                        foreach($tahunMabas as $tahun) {
+                            $tahunImportOptions[(string)$tahun->id] = 'Maba ' . $tahun->tahun . ($tahun->is_active ? ' (Aktif)' : '');
+                        }
+                    @endphp
+                    <x-form-select name="tahun_maba_id" id="tahun_maba_id" :value="old('tahun_maba_id', (string)($tahunMabas->firstWhere('is_active', true)->id ?? ''))" placeholder="-- Pilih Tahun Maba Target --" :options="$tahunImportOptions" required />
                     @error('tahun_maba_id')
                         <p class="text-xs text-rose-600 mt-1.5 font-medium">{{ $message }}</p>
                     @enderror

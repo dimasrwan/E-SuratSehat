@@ -95,39 +95,37 @@
                 <!-- Jenis Kelamin -->
                 <div class="space-y-1">
                     <label for="jenis_kelamin" class="block font-bold text-slate-700">Jenis Kelamin <span class="text-rose-500">*</span></label>
-                    <select name="jenis_kelamin" id="jenis_kelamin" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="">-- Pilih Jenis Kelamin --</option>
-                        @foreach($jkOptions as $jk)
-                            @php
-                                $valMapped = ($jk === 'Laki-laki') ? 'L' : 'P';
-                                $currentJk = old('jenis_kelamin', $mabaData->jenis_kelamin);
-                                $isSelected = ($currentJk === $jk || $currentJk === $valMapped);
-                            @endphp
-                            <option value="{{ $jk }}" {{ $isSelected ? 'selected' : '' }}>{{ $jk }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $jkSelectOptions = [];
+                        foreach($jkOptions as $jk) {
+                            $jkSelectOptions[$jk] = $jk;
+                        }
+                    @endphp
+                    <x-form-select name="jenis_kelamin" id="jenis_kelamin" :value="old('jenis_kelamin', $mabaData->jenis_kelamin)" placeholder="-- Pilih Jenis Kelamin --" :options="$jkSelectOptions" required />
                 </div>
 
                 <!-- Agama -->
                 <div class="space-y-1">
                     <label for="agama" class="block font-bold text-slate-700">Agama <span class="text-rose-500">*</span></label>
-                    <select name="agama" id="agama" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="">-- Pilih Agama --</option>
-                        @foreach($agamaOptions as $ag)
-                            <option value="{{ $ag }}" {{ old('agama', $mabaData->agama) === $ag ? 'selected' : '' }}>{{ $ag }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $agSelectOptions = [];
+                        foreach($agamaOptions as $ag) {
+                            $agSelectOptions[$ag] = $ag;
+                        }
+                    @endphp
+                    <x-form-select name="agama" id="agama" :value="old('agama', $mabaData->agama)" placeholder="-- Pilih Agama --" :options="$agSelectOptions" required />
                 </div>
 
                 <!-- Fakultas Dropdown -->
                 <div class="space-y-1">
                     <label for="fakultas" class="block font-bold text-slate-700">Fakultas <span class="text-rose-500">*</span></label>
-                    <select name="fakultas" id="fakultas" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="">-- Pilih Fakultas --</option>
-                        @foreach($fakultasOptions as $fak)
-                            <option value="{{ $fak }}" {{ old('fakultas', $mabaData->fakultas) === $fak ? 'selected' : '' }}>{{ $fak }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $fakSelectOptions = [];
+                        foreach($fakultasOptions as $fak) {
+                            $fakSelectOptions[$fak] = $fak;
+                        }
+                    @endphp
+                    <x-form-select name="fakultas" id="fakultas" :value="old('fakultas', $mabaData->fakultas)" placeholder="-- Pilih Fakultas --" :options="$fakSelectOptions" required />
                 </div>
 
                 <!-- Program Studi (READONLY) -->

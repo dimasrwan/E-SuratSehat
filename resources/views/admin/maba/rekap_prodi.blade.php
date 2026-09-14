@@ -11,17 +11,14 @@
         </div>
         
         <!-- Filter Form -->
-        <form method="GET" action="{{ route('maba.rekapProdi') }}" class="flex items-center gap-3">
-            <div>
-                <label for="tahun" class="sr-only">Tahun</label>
-                <select name="tahun" id="tahun" onchange="this.form.submit()" class="text-sm rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                    @foreach($tahunList as $t)
-                        <option value="{{ $t }}" {{ (string)$tahunSelected === (string)$t ? 'selected' : '' }}>
-                            Tahun {{ $t }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        <form method="GET" action="{{ route('maba.rekapProdi') }}" class="flex items-center gap-3 w-44">
+            @php
+                $tahunOptions = [];
+                foreach($tahunList as $t) {
+                    $tahunOptions[(string)$t] = 'Tahun ' . $t;
+                }
+            @endphp
+            <x-form-select name="tahun" id="tahun" :value="(string)$tahunSelected" placeholder="Pilih Tahun" :options="$tahunOptions" onchange="this.closest('form').submit()" />
         </form>
     </div>
 

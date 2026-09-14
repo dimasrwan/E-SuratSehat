@@ -1,23 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<div>
-    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div class="space-y-5">
+    <!-- Header & Action Controls -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-1">
         <div>
-            <h2 class="text-3xl font-bold text-gray-800 tracking-tight">
-                @php
-                    $cleanYearPeng = preg_replace('/[^0-9]/', '', (string)($selectedTahun ?? 'all'));
-                @endphp
+            @php
+                $cleanYearPeng = preg_replace('/[^0-9]/', '', (string)($selectedTahun ?? 'all'));
+            @endphp
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 @if(($selectedTahun ?? 'all') === 'all' || empty($cleanYearPeng))
                     Pengiriman Surat Keterangan Sehat
                 @else
                     Pengiriman Surat Maba {{ $cleanYearPeng }}
                 @endif
-            </h2>
-            <p class="text-xs text-slate-500 mt-1">Daftar pengiriman email surat kesehatan per angkatan mahasiswa baru.</p>
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-normal mt-0.5">Daftar pengiriman email surat kesehatan per angkatan mahasiswa baru.</p>
         </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <form action="{{ route('pengiriman.index') }}" method="GET" class="w-48">
+
+        <div class="flex flex-wrap items-center gap-2">
+            <!-- 1. Tahun Maba Selector -->
+            <form action="{{ route('pengiriman.index') }}" method="GET" class="w-36 sm:w-44">
                 @php
                     $yearOptions = ['all' => 'Semua Tahun'];
                     foreach ($availableYears as $yr) {
@@ -26,132 +29,134 @@
                 @endphp
                 <x-form-select name="tahun_masuk" :value="$selectedTahun ?? (string)$activeYear" placeholder="Pilih Tahun Maba" :options="$yearOptions" onchange="this.closest('form').submit()" />
             </form>
-            <div class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-800 text-xs font-semibold shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-slate-500">Input Baru:</span>
-                <span class="font-bold text-emerald-900">Maba {{ $activeYear }}</span>
-            </div>
+
+            <!-- 2. Kirim Ulang Gagal (Secondary Warning Button) -->
             <form action="{{ route('pengiriman.retryFailed') }}" method="POST" onsubmit="event.preventDefault(); if(confirm('Kirim ulang semua email yang gagal?')) submitAjaxForm(this, 'btn-kirim-ulang', 'Mengirim...');">
                 @csrf
-                <button type="submit" id="btn-kirim-ulang" class="inline-flex items-center px-5 py-2.5 bg-amber-500 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition ease-in-out duration-150">
-                    <svg class="icon-loading hidden animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                <button type="submit" id="btn-kirim-ulang" class="h-[42px] px-3.5 bg-white hover:bg-slate-50 border border-amber-300 text-amber-800 font-medium text-xs rounded-lg shadow-2xs transition duration-150 flex items-center justify-center gap-1.5">
+                    <svg class="icon-loading hidden animate-spin h-4 w-4 text-amber-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                    <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     <span class="btn-text">Kirim Ulang Gagal</span>
                 </button>
             </form>
-            <button type="button" id="btn-kirim-terpilih" onclick="submitBulkSend(this)" class="inline-flex items-center px-5 py-2.5 bg-emerald-700 border border-transparent rounded-lg font-semibold text-sm text-white tracking-wide shadow-sm hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 transition ease-in-out duration-150">
-                <svg class="icon-loading hidden animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+
+            <!-- 3. Kirim Terpilih (Primary Action Button) -->
+            <button type="button" id="btn-kirim-terpilih" onclick="submitBulkSend(this)" class="h-[42px] px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-medium text-xs rounded-lg shadow-2xs transition duration-150 flex items-center justify-center gap-1.5">
+                <svg class="icon-loading hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                <svg class="w-3.5 h-3.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 <span class="btn-text">Kirim Terpilih</span>
             </button>
         </div>
     </div>
 
     @if (session('success'))
-        <div class="mb-6 bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-md shadow-sm" role="alert">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-emerald-800">{{ session('success') }}</p>
-                </div>
-            </div>
+        <div class="p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-lg text-xs font-medium text-emerald-800 flex items-center gap-2.5">
+            <svg class="h-4 w-4 text-emerald-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <div>{{ session('success') }}</div>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <ul class="list-disc list-inside text-sm text-red-800">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+        <div class="p-3.5 bg-rose-50 border border-rose-200/80 rounded-lg text-xs font-medium text-rose-800 flex items-center gap-2.5">
+            <svg class="h-4 w-4 text-rose-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                <ul class="list-disc list-inside space-y-0.5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
         </div>
     @endif
 
-    <div class="bg-white overflow-hidden shadow-md sm:rounded-xl border border-gray-100">
-        <div class="p-0 bg-white">
-            <form id="bulk-send-form" action="{{ route('pengiriman.bulkSend') }}" method="POST">
-                @csrf
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-emerald-50">
-                            <tr>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">
-                                    <input type="checkbox" id="select-all" class="rounded border-gray-300 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50">
-                                </th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Nama Mahasiswa</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Waktu Pengiriman</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Aksi</th>
+    <!-- Table Outer Container -->
+    <div class="bg-white rounded-lg border border-slate-200/80 shadow-2xs overflow-hidden">
+        <form id="bulk-send-form" action="{{ route('pengiriman.bulkSend') }}" method="POST">
+            @csrf
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase text-[10px] font-semibold tracking-wider">
+                        <tr>
+                            <th class="py-2.5 px-4 w-10 text-center">
+                                <input type="checkbox" id="select-all" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/20">
+                            </th>
+                            <th class="py-2.5 px-4">Nama Mahasiswa</th>
+                            <th class="py-2.5 px-4">Email</th>
+                            <th class="py-2.5 px-4">Waktu Pengiriman</th>
+                            <th class="py-2.5 px-4">Status</th>
+                            <th class="py-2.5 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($pengiriman as $data)
+                            <tr class="hover:bg-slate-50/60 transition duration-150">
+                                <td class="py-3 px-4 text-center">
+                                    @if(!in_array($data->status_pengiriman, ['Terkirim', 'Dalam antrean', 'Mengirim']))
+                                        <input type="checkbox" name="pemeriksaan_ids[]" value="{{ $data->id }}" class="row-checkbox rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/20">
+                                    @else
+                                        <input type="checkbox" disabled class="rounded border-slate-200 text-slate-300 cursor-not-allowed">
+                                    @endif
+                                </td>
+                                <td class="py-3 px-4 font-bold text-slate-900 text-xs">{{ $data->nama }}</td>
+                                <td class="py-3 px-4 text-slate-600 text-xs font-mono">{{ $data->email }}</td>
+                                <td class="py-3 px-4 text-slate-500 text-xs">
+                                    {{ $data->waktu_pengiriman ? \Carbon\Carbon::parse($data->waktu_pengiriman)->format('d/m/Y H:i:s') : '-' }}
+                                </td>
+                                <td class="py-3 px-4 text-xs">
+                                    @if($data->status_pengiriman == 'Terkirim')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                            ● Terkirim
+                                        </span>
+                                    @elseif($data->status_pengiriman == 'Gagal')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60">
+                                            ● Gagal
+                                        </span>
+                                    @elseif($data->status_pengiriman == 'Mengirim')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60 animate-pulse">
+                                            ● Mengirim
+                                        </span>
+                                    @elseif($data->status_pengiriman == 'Dalam antrean')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-sky-50 text-sky-700 border border-sky-200/60">
+                                            ● Dalam antrean
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
+                                            ● Belum dikirim
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="py-3 px-4 text-xs text-center">
+                                    @if(!in_array($data->status_pengiriman, ['Dalam antrean', 'Mengirim']))
+                                        <button type="submit" formaction="{{ route('pemeriksaan.sendEmail', $data->id) }}" onclick="event.preventDefault(); submitAjaxForm(this.closest('form'), this.id, 'Memproses...', this.getAttribute('formaction'))" id="btn-individu-{{ $data->id }}" class="h-7 px-2.5 bg-white hover:bg-slate-50 border {{ $data->status_pengiriman == 'Gagal' ? 'border-amber-300 text-amber-800' : 'border-slate-300 text-slate-700' }} font-medium text-[11px] rounded transition duration-150 inline-flex items-center justify-center">
+                                            <svg class="icon-loading hidden animate-spin h-3.5 w-3.5 mr-1 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                            <span class="btn-text font-medium">{{ $data->status_pengiriman == 'Terkirim' ? 'Kirim Ulang' : ($data->status_pengiriman == 'Gagal' ? 'Kirim Ulang' : 'Kirim Individu') }}</span>
+                                        </button>
+                                    @else
+                                        <span class="text-sky-600 italic text-[11px] font-medium">Diproses...</span>
+                                    @endif
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-100">
-                            @forelse ($pengiriman as $data)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @if(!in_array($data->status_pengiriman, ['Terkirim', 'Dalam antrean', 'Mengirim']))
-                                            <input type="checkbox" name="pemeriksaan_ids[]" value="{{ $data->id }}" class="row-checkbox rounded border-gray-300 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50">
-                                        @else
-                                            <input type="checkbox" disabled class="rounded border-gray-300 text-gray-300 shadow-sm">
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{{ $data->nama }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $data->email }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $data->waktu_pengiriman ? \Carbon\Carbon::parse($data->waktu_pengiriman)->format('d/m/Y H:i:s') : '-' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        @if($data->status_pengiriman == 'Terkirim')
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">Terkirim</span>
-                                        @elseif($data->status_pengiriman == 'Gagal')
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Gagal</span>
-                                        @elseif($data->status_pengiriman == 'Mengirim')
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800 animate-pulse">Mengirim</span>
-                                        @elseif($data->status_pengiriman == 'Dalam antrean')
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-sky-100 text-sky-800">Dalam antrean</span>
-                                        @else
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Belum dikirim</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @if(!in_array($data->status_pengiriman, ['Dalam antrean', 'Mengirim']))
-                                            <button type="submit" formaction="{{ route('pemeriksaan.sendEmail', $data->id) }}" onclick="event.preventDefault(); submitAjaxForm(this.closest('form'), this.id, 'Memproses...', this.getAttribute('formaction'))" id="btn-individu-{{ $data->id }}" class="inline-flex items-center text-emerald-700 hover:text-white hover:bg-emerald-700 border border-emerald-700 bg-emerald-50 px-3 py-1 rounded transition">
-                                                <svg class="icon-loading hidden animate-spin h-5 w-5 mr-1.5 text-emerald-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                                                <span class="btn-text font-bold">{{ $data->status_pengiriman == 'Terkirim' ? 'Kirim Ulang' : 'Kirim Individu' }}</span>
-                                            </button>
-                                        @else
-                                            <span class="text-sky-600 italic text-xs font-semibold">Diproses...</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-6 py-10 whitespace-nowrap text-sm text-center text-gray-500 italic">
-                                        Belum ada data dengan email yang tersedia.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-            
-            <div class="p-6 border-t border-gray-100">
+                        @empty
+                            <tr>
+                                <td colspan="6" class="py-10 text-center text-xs text-slate-400 font-normal">
+                                    Belum ada data dengan email yang tersedia.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        
+        @if($pengiriman && $pengiriman->hasPages())
+            <div class="px-4 py-3 border-t border-slate-200 bg-slate-50/50">
                 {{ $pengiriman->links() }}
             </div>
-        </div>
+        @endif
     </div>
 </div>
 

@@ -174,6 +174,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Navbar Dropdown Handler
             const dropdownWrappers = document.querySelectorAll('.nav-dropdown-wrapper');
             
             dropdownWrappers.forEach(wrapper => {
@@ -205,6 +206,138 @@
                 }
             });
 
+            // Reusable Custom Select Component Handler
+            function initCustomSelects() {
+                const customSelects = document.querySelectorAll('.custom-select-wrapper');
+
+                customSelects.forEach(wrapper => {
+                    if (wrapper.dataset.customSelectInitialized) return;
+                    wrapper.dataset.customSelectInitialized = 'true';
+
+                    const trigger = wrapper.querySelector('.custom-select-trigger');
+                    const menu = wrapper.querySelector('.custom-select-menu');
+                    const labelSpan = wrapper.querySelector('.custom-select-label');
+                    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                    const chevron = wrapper.querySelector('.custom-select-chevron');
+                    const options = wrapper.querySelectorAll('.custom-select-option');
+
+                    if (!trigger || !menu || !hiddenInput) return;
+
+                    function closeMenu() {
+                        menu.classList.add('hidden');
+                        trigger.setAttribute('aria-expanded', 'false');
+                        if (chevron) chevron.classList.remove('rotate-180');
+                        trigger.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                    }
+
+                    function openMenu() {
+                        // Close all other custom select menus first
+                        document.querySelectorAll('.custom-select-menu').forEach(m => {
+                            if (m !== menu) {
+                                m.classList.add('hidden');
+                                const parent = m.closest('.custom-select-wrapper');
+                                if (parent) {
+                                    const t = parent.querySelector('.custom-select-trigger');
+                                    const c = parent.querySelector('.custom-select-chevron');
+                                    if (t) t.setAttribute('aria-expanded', 'false');
+                                    if (c) c.classList.remove('rotate-180');
+                                }
+                            }
+                        });
+
+                        menu.classList.remove('hidden');
+                        trigger.setAttribute('aria-expanded', 'true');
+                        if (chevron) chevron.classList.add('rotate-180');
+                        trigger.classList.add('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                    }
+
+                    trigger.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        if (hiddenInput.disabled) return;
+                        const isHidden = menu.classList.contains('hidden');
+                        if (isHidden) {
+                            openMenu();
+                        } else {
+                            closeMenu();
+                        }
+                    });
+
+                    options.forEach(option => {
+                        option.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            const selectedVal = this.getAttribute('data-value');
+                            const selectedLabelText = this.getAttribute('data-label');
+
+                            // Update hidden input
+                            hiddenInput.value = selectedVal;
+
+                            // Update trigger label display
+                            if (labelSpan) {
+                                labelSpan.textContent = selectedLabelText;
+                                labelSpan.classList.remove('text-slate-400', 'font-normal');
+                                labelSpan.classList.add('text-slate-800', 'font-semibold');
+                            }
+
+                            // Update options active state and checkmarks
+                            options.forEach(opt => {
+                                const isCurrent = opt === this;
+                                opt.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+                                opt.className = 'custom-select-option px-3.5 py-2 cursor-pointer flex items-center justify-between transition-colors ' +
+                                    (isCurrent ? 'bg-emerald-50/80 font-bold text-emerald-950' : 'text-slate-800 hover:bg-[#F3F7F5] font-normal');
+
+                                let checkIcon = opt.querySelector('svg');
+                                if (isCurrent) {
+                                    if (!checkIcon) {
+                                        checkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                                        checkIcon.setAttribute('class', 'w-3.5 h-3.5 text-emerald-600 flex-shrink-0 ml-2');
+                                        checkIcon.setAttribute('fill', 'none');
+                                        checkIcon.setAttribute('stroke', 'currentColor');
+                                        checkIcon.setAttribute('viewBox', '0 0 24 24');
+                                        checkIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>';
+                                        opt.appendChild(checkIcon);
+                                    }
+                                } else if (checkIcon) {
+                                    checkIcon.remove();
+                                }
+                            });
+
+                            closeMenu();
+
+                            // Dispatch native change event on hidden input so forms and dynamic filters respond
+                            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                            // Execute inline data-onchange if provided
+                            const inlineOnchange = hiddenInput.getAttribute('data-onchange');
+                            if (inlineOnchange) {
+                                try {
+                                    const fn = new Function(inlineOnchange);
+                                    fn.call(hiddenInput);
+                                } catch (err) {
+                                    console.error('Error executing inline onchange:', err);
+                                }
+                            }
+                        });
+                    });
+
+                    // Keyboard navigation
+                    trigger.addEventListener('keydown', function (e) {
+                        if (hiddenInput.disabled) return;
+
+                        if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (menu.classList.contains('hidden')) {
+                                openMenu();
+                            }
+                        } else if (e.key === 'Escape') {
+                            closeMenu();
+                        }
+                    });
+                });
+            }
+
+            initCustomSelects();
+
+            // Click outside handler
             document.addEventListener('click', function () {
                 dropdownWrappers.forEach(w => {
                     const p = w.querySelector('.nav-dropdown-panel');
@@ -212,6 +345,34 @@
                     if (p) p.classList.add('hidden');
                     if (c) c.classList.remove('rotate-180');
                 });
+
+                document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                    const menu = wrapper.querySelector('.custom-select-menu');
+                    const trigger = wrapper.querySelector('.custom-select-trigger');
+                    const chevron = wrapper.querySelector('.custom-select-chevron');
+                    if (menu && !menu.classList.contains('hidden')) {
+                        menu.classList.add('hidden');
+                        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                        if (chevron) chevron.classList.remove('rotate-180');
+                        if (trigger) trigger.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                        const menu = wrapper.querySelector('.custom-select-menu');
+                        const trigger = wrapper.querySelector('.custom-select-trigger');
+                        const chevron = wrapper.querySelector('.custom-select-chevron');
+                        if (menu && !menu.classList.contains('hidden')) {
+                            menu.classList.add('hidden');
+                            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                            if (chevron) chevron.classList.remove('rotate-180');
+                            if (trigger) trigger.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                        }
+                    });
+                }
             });
 
             const mobileTrigger = document.getElementById('mobile-menu-trigger');
@@ -225,3 +386,4 @@
     </script>
 </body>
 </html>
+

@@ -110,11 +110,10 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="jenis_kelamin" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">7. Jenis Kelamin <span class="text-rose-500">*</span></label>
-                        <select name="jenis_kelamin" id="jenis_kelamin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:bg-white transition duration-150">
-                            <option value="">-- Pilih Jenis Kelamin --</option>
-                            <option value="Laki-laki" {{ old('jenis_kelamin', $claimedMaba->jenis_kelamin) == 'Laki-laki' || old('jenis_kelamin', $claimedMaba->jenis_kelamin) == 'Laki-Laki' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="Perempuan" {{ old('jenis_kelamin', $claimedMaba->jenis_kelamin) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                        </select>
+                        <x-form-select name="jenis_kelamin" id="jenis_kelamin" :value="old('jenis_kelamin', $claimedMaba->jenis_kelamin)" placeholder="-- Pilih Jenis Kelamin --" :options="[
+                            'Laki-laki' => 'Laki-laki',
+                            'Perempuan' => 'Perempuan'
+                        ]" required />
                     </div>
                     <div>
                         <label for="agama" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">8. Agama <span class="text-rose-500">*</span></label>
@@ -125,25 +124,20 @@
                 <!-- 9. Fakultas -->
                 <div>
                     <label for="fakultas" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">9. Fakultas <span class="text-rose-500">*</span></label>
-                    <select name="fakultas" id="fakultas" required class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:bg-white transition duration-150">
-                        <option value="">-- Pilih Fakultas --</option>
-                        @php
-                            $fakultasList = [
-                                'Fakultas Tarbiyah dan Keguruan',
-                                'Fakultas Syariah dan Hukum',
-                                'Fakultas Dakwah dan Komunikasi',
-                                'Fakultas Ushuluddin dan Filsafat',
-                                'Fakultas Adab dan Humaniora',
-                                'Fakultas Ekonomi dan Bisnis Islam',
-                                'Fakultas Sains dan Teknologi',
-                                'Fakultas Psikologi',
-                                'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
-                            ];
-                        @endphp
-                        @foreach($fakultasList as $fak)
-                        <option value="{{ $fak }}" {{ old('fakultas', $claimedMaba->fakultas) == $fak ? 'selected' : '' }}>{{ $fak }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $fakultasList = [
+                            'Fakultas Tarbiyah dan Keguruan' => 'Fakultas Tarbiyah dan Keguruan',
+                            'Fakultas Syariah dan Hukum' => 'Fakultas Syariah dan Hukum',
+                            'Fakultas Dakwah dan Komunikasi' => 'Fakultas Dakwah dan Komunikasi',
+                            'Fakultas Ushuluddin dan Filsafat' => 'Fakultas Ushuluddin dan Filsafat',
+                            'Fakultas Adab dan Humaniora' => 'Fakultas Adab dan Humaniora',
+                            'Fakultas Ekonomi dan Bisnis Islam' => 'Fakultas Ekonomi dan Bisnis Islam',
+                            'Fakultas Sains dan Teknologi' => 'Fakultas Sains dan Teknologi',
+                            'Fakultas Psikologi' => 'Fakultas Psikologi',
+                            'Fakultas Ilmu Sosial dan Ilmu Pemerintahan' => 'Fakultas Ilmu Sosial dan Ilmu Pemerintahan'
+                        ];
+                    @endphp
+                    <x-form-select name="fakultas" id="fakultas" :value="old('fakultas', $claimedMaba->fakultas)" placeholder="-- Pilih Fakultas --" :options="$fakultasList" required />
                 </div>
 
                 <!-- 10. Program Studi (READ ONLY) -->

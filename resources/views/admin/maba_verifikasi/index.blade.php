@@ -33,13 +33,12 @@
 
             <div>
                 <label for="status" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Status Verification</label>
-                <select name="status" id="status" onchange="this.form.submit()" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-emerald-500">
-                    <option value="">Semua Status Valid</option>
-                    <option value="MENUNGGU_VERIFIKASI" {{ request('status') == 'MENUNGGU_VERIFIKASI' ? 'selected' : '' }}>MENUNGGU VERIFIKASI</option>
-                    <option value="PERLU_PERBAIKAN" {{ request('status') == 'PERLU_PERBAIKAN' ? 'selected' : '' }}>PERLU PERBAIKAN</option>
-                    <option value="TERVERIFIKASI" {{ request('status') == 'TERVERIFIKASI' ? 'selected' : '' }}>TERVERIFIKASI</option>
-                    <option value="PEMERIKSAAN_SELESAI" {{ request('status') == 'PEMERIKSAAN_SELESAI' ? 'selected' : '' }}>PEMERIKSAAN SELESAI</option>
-                </select>
+                <x-form-select name="status" id="status" :value="request('status', '')" placeholder="Semua Status Valid" :options="[
+                    'MENUNGGU_VERIFIKASI' => 'MENUNGGU VERIFIKASI',
+                    'PERLU_PERBAIKAN' => 'PERLU PERBAIKAN',
+                    'TERVERIFIKASI' => 'TERVERIFIKASI',
+                    'PEMERIKSAAN_SELESAI' => 'PEMERIKSAAN SELESAI'
+                ]" onchange="this.closest('form').submit()" />
             </div>
 
             <div class="flex items-end gap-2">

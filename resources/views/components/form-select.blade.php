@@ -16,6 +16,8 @@
 
     // Normalize options list into array of key-value pairs
     $normalizedOptions = [];
+    $selectedLabel = '';
+
     foreach ($options as $key => $optVal) {
         if (is_array($optVal)) {
             $val = $optVal['value'] ?? $key;
@@ -26,77 +28,85 @@
             $label = $optVal;
             $extraAttr = [];
         }
+
+        $strVal = (string)$val;
+        $strLabel = (string)$label;
+
+        if ((string)$selectedValue === $strVal) {
+            $selectedLabel = $strLabel;
+        }
+
         $normalizedOptions[] = [
-            'value' => (string)$val,
-            'label' => (string)$label,
+            'value' => $strVal,
+            'label' => $strLabel,
             'extra' => $extraAttr
         ];
     }
 
-    // Find current label
-    $currentLabel = $placeholder;
-    foreach ($normalizedOptions as $opt) {
-        if ((string)$opt['value'] === (string)$selectedValue) {
-            $currentLabel = $opt['label'];
-            break;
-        }
+    if ($selectedLabel === '' && (string)$selectedValue !== '') {
+        $selectedLabel = (string)$selectedValue;
     }
+
+    $displayText = $selectedLabel !== '' ? $selectedLabel : ($placeholder ?: 'Pilih...');
+    $isPlaceholderActive = ($selectedLabel === '');
 @endphp
 
-<div class="relative custom-select-wrapper w-full {{ $class }}"
-     id="wrapper-{{ $elementId }}"
-     data-disabled="{{ $disabled ? 'true' : 'false' }}"
-     data-required="{{ $required ? 'true' : 'false' }}">
-
-    <!-- Hidden Native Input for standard HTML Form submission & validation -->
+<div class="relative custom-select-wrapper w-full {{ $class }}" data-select-id="{{ $elementId }}">
+    <!-- Form submission value handled via Hidden Input -->
     <input type="hidden"
            name="{{ $name }}"
            id="{{ $elementId }}"
            value="{{ $selectedValue }}"
+           @if($onchange) data-onchange="{{ $onchange }}" @endif
            @if($required) required @endif
-           @if($disabled) disabled @endif
-           @if($onchange) onchange="{{ $onchange }}" @endif>
+           @if($disabled) disabled @endif>
 
-    <!-- Trigger Button -->
+    <!-- Custom Select Trigger Button -->
     <button type="button"
-            id="trigger-{{ $elementId }}"
-            class="custom-select-trigger w-full h-[44px] px-3.5 bg-white border border-slate-200 rounded-[10px] text-sm text-slate-800 flex items-center justify-between shadow-sm transition duration-150 ease-in-out focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 {{ $disabled ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-80' : 'hover:border-slate-300 cursor-pointer' }}"
+            class="custom-select-trigger relative w-full h-[42px] px-3.5 flex items-center justify-between bg-white border border-[#D9E1E7] rounded-lg text-[13px] font-medium text-slate-800 shadow-2xs focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 cursor-pointer disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed transition duration-150 ease-in-out text-left"
             aria-haspopup="listbox"
             aria-expanded="false"
-            aria-controls="panel-{{ $elementId }}"
             @if($disabled) disabled @endif>
-        <span class="custom-select-label truncate font-medium text-[14px]">
-            {{ $currentLabel }}
+        <span class="custom-select-label truncate {{ $isPlaceholderActive ? 'text-slate-400 font-normal' : 'text-slate-800 font-semibold' }}">
+            {{ $displayText }}
         </span>
-        <svg class="custom-select-arrow w-4 h-4 ml-2 text-slate-400 transition-transform duration-200 ease-in-out flex-shrink-0"
-             fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="custom-select-chevron w-3.5 h-3.5 text-slate-500 transition-transform duration-150 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
     </button>
 
-    <!-- Floating Options Dropdown Panel -->
-    <div id="panel-{{ $elementId }}"
-         class="custom-select-panel hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200 rounded-[12px] shadow-lg shadow-slate-900/10 z-[9999] max-h-72 overflow-y-auto py-1 focus:outline-none transition-all duration-150 ease-in-out transform opacity-0 -translate-y-1 scale-[0.99]"
-         tabindex="-1"
+    <!-- Custom Select Menu Panel -->
+    <div class="custom-select-menu hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[#D9E1E7] rounded-lg shadow-lg z-[9999] max-h-60 overflow-y-auto py-1 text-[13px]"
          role="listbox">
-        @foreach ($normalizedOptions as $index => $opt)
+        @if($placeholder)
+            <div class="custom-select-option px-3.5 py-2 cursor-pointer flex items-center justify-between text-slate-500 hover:bg-slate-50 transition-colors {{ (string)$selectedValue === '' ? 'bg-emerald-50/70 font-semibold text-emerald-900' : '' }}"
+                 data-value=""
+                 data-label="{{ $placeholder }}"
+                 role="option"
+                 aria-selected="{{ (string)$selectedValue === '' ? 'true' : 'false' }}">
+                <span class="truncate">{{ $placeholder }}</span>
+                @if((string)$selectedValue === '')
+                    <svg class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                @endif
+            </div>
+        @endif
+
+        @foreach ($normalizedOptions as $opt)
             @php
                 $isSelected = (string)$opt['value'] === (string)$selectedValue;
             @endphp
-            <div role="option"
-                 id="opt-{{ $elementId }}-{{ $index }}"
-                 aria-selected="{{ $isSelected ? 'true' : 'false' }}"
+            <div class="custom-select-option px-3.5 py-2 cursor-pointer flex items-center justify-between text-slate-800 hover:bg-[#F3F7F5] transition-colors {{ $isSelected ? 'bg-emerald-50/80 font-bold text-emerald-950' : 'font-normal' }}"
                  data-value="{{ $opt['value'] }}"
                  data-label="{{ $opt['label'] }}"
-                 @foreach($opt['extra'] as $eKey => $eVal) data-{{ $eKey }}="{{ $eVal }}" @endforeach
-                 class="custom-select-option h-[40px] px-3.5 text-[14px] flex items-center justify-between cursor-pointer select-none transition-colors duration-150 {{ $isSelected ? 'bg-emerald-50 text-emerald-900 font-semibold' : 'text-slate-700 hover:bg-emerald-50/70 hover:text-slate-900' }}">
+                 role="option"
+                 aria-selected="{{ $isSelected ? 'true' : 'false' }}"
+                 @foreach($opt['extra'] as $eKey => $eVal) data-{{ $eKey }}="{{ $eVal }}" @endforeach>
                 <span class="truncate">{{ $opt['label'] }}</span>
-                <span class="custom-select-check flex-shrink-0 ml-2 text-emerald-600 {{ $isSelected ? 'block' : 'hidden' }}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </span>
+                @if($isSelected)
+                    <svg class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                @endif
             </div>
         @endforeach
     </div>
 </div>
+
