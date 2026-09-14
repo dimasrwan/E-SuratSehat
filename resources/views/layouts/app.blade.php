@@ -91,10 +91,10 @@
                 <!-- Right: Active Year Pill & User Profile -->
                 @auth
                 <div class="flex items-center gap-3">
-                    <!-- Single Active Year Pill in Navbar -->
-                    <div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-950/70 border border-emerald-700/60 text-emerald-200 rounded-full text-xs font-medium">
+                    <!-- Minimal Inline Active Year Indicator in Navbar -->
+                    <div class="hidden sm:inline-flex items-center gap-1.5 text-xs">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>Tahun Aktif · <strong class="font-bold text-white">Maba {{ \App\Services\TahunMabaService::getActiveYearInt() }}</strong></span>
+                        <span class="text-emerald-200/90 font-medium">Tahun Aktif <span class="text-emerald-400/60 mx-0.5">·</span> <strong class="font-semibold text-white">{{ \App\Services\TahunMabaService::getActiveYearInt() }}</strong></span>
                     </div>
 
                     <!-- Compact User Account Dropdown -->
@@ -337,6 +337,254 @@
 
             initCustomSelects();
 
+            // Reusable Custom Datepicker Component Handler
+            function initCustomDatepickers() {
+                const datepickers = document.querySelectorAll('.custom-datepicker-wrapper');
+                const monthNamesIndo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+                datepickers.forEach(wrapper => {
+                    if (wrapper.dataset.customDatepickerInitialized) return;
+                    wrapper.dataset.customDatepickerInitialized = 'true';
+
+                    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                    const triggerInput = wrapper.querySelector('.custom-datepicker-trigger');
+                    const popover = wrapper.querySelector('.custom-datepicker-popover');
+                    const monthYearSpan = wrapper.querySelector('.custom-datepicker-monthyear');
+                    const prevBtn = wrapper.querySelector('.custom-datepicker-prev');
+                    const nextBtn = wrapper.querySelector('.custom-datepicker-next');
+                    const daysGrid = wrapper.querySelector('.custom-datepicker-days');
+                    const clearBtn = wrapper.querySelector('.custom-datepicker-clear');
+                    const todayBtn = wrapper.querySelector('.custom-datepicker-today');
+
+                    if (!hiddenInput || !triggerInput || !popover || !daysGrid) return;
+
+                    let currentViewDate = new Date();
+                    let selectedDateIso = hiddenInput.value ? hiddenInput.value : '';
+
+                    if (selectedDateIso) {
+                        const parts = selectedDateIso.split('-');
+                        if (parts.length === 3) {
+                            currentViewDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                        }
+                    }
+
+                    function formatIso(year, monthIndex, day) {
+                        const y = year;
+                        const m = String(monthIndex + 1).padStart(2, '0');
+                        const d = String(day).padStart(2, '0');
+                        return `${y}-${m}-${d}`;
+                    }
+
+                    function formatDisplay(year, monthIndex, day) {
+                        const d = String(day).padStart(2, '0');
+                        const m = String(monthIndex + 1).padStart(2, '0');
+                        const y = year;
+                        return `${d}/${m}/${y}`;
+                    }
+
+                    function renderCalendar() {
+                        const year = currentViewDate.getFullYear();
+                        const month = currentViewDate.getMonth();
+
+                        if (monthYearSpan) {
+                            monthYearSpan.textContent = `${monthNamesIndo[month]} ${year}`;
+                        }
+
+                        daysGrid.innerHTML = '';
+
+                        const firstDayOfMonth = new Date(year, month, 1).getDay();
+                        const daysInMonth = new Date(year, month + 1, 0).getDate();
+                        const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+                        const todayObj = new Date();
+                        const todayIso = formatIso(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate());
+
+                        // Render Previous Month Days
+                        for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+                            const prevDayNum = daysInPrevMonth - i;
+                            const dayBtn = document.createElement('button');
+                            dayBtn.type = 'button';
+                            dayBtn.className = 'h-8 w-8 mx-auto flex items-center justify-center rounded-full text-slate-300 text-xs font-normal cursor-pointer hover:bg-slate-50 transition';
+                            dayBtn.textContent = prevDayNum;
+
+                            dayBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                const targetMonth = month === 0 ? 11 : month - 1;
+                                const targetYear = month === 0 ? year - 1 : year;
+                                selectDate(targetYear, targetMonth, prevDayNum);
+                            });
+
+                            daysGrid.appendChild(dayBtn);
+                        }
+
+                        // Render Current Month Days
+                        for (let d = 1; d <= daysInMonth; d++) {
+                            const dateIso = formatIso(year, month, d);
+                            const isSelected = (dateIso === selectedDateIso);
+                            const isToday = (dateIso === todayIso);
+
+                            const dayBtn = document.createElement('button');
+                            dayBtn.type = 'button';
+                            
+                            let classNames = 'h-8 w-8 mx-auto flex items-center justify-center rounded-full text-xs transition duration-150 cursor-pointer ';
+                            if (isSelected) {
+                                classNames += 'bg-emerald-700 font-bold text-white shadow-2xs ';
+                            } else if (isToday) {
+                                classNames += 'bg-emerald-50 text-emerald-900 font-bold border border-emerald-300 ';
+                            } else {
+                                classNames += 'text-slate-800 hover:bg-[#F3F7F5] hover:text-emerald-900 font-medium ';
+                            }
+
+                            dayBtn.className = classNames;
+                            dayBtn.textContent = d;
+
+                            dayBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                selectDate(year, month, d);
+                            });
+
+                            daysGrid.appendChild(dayBtn);
+                        }
+
+                        // Render Next Month Days to complete grid rows
+                        const totalRendered = firstDayOfMonth + daysInMonth;
+                        const remainder = (7 - (totalRendered % 7)) % 7;
+                        for (let n = 1; n <= remainder; n++) {
+                            const dayBtn = document.createElement('button');
+                            dayBtn.type = 'button';
+                            dayBtn.className = 'h-8 w-8 mx-auto flex items-center justify-center rounded-full text-slate-300 text-xs font-normal cursor-pointer hover:bg-slate-50 transition';
+                            dayBtn.textContent = n;
+
+                            dayBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                const targetMonth = month === 11 ? 0 : month + 1;
+                                const targetYear = month === 11 ? year + 1 : year;
+                                selectDate(targetYear, targetMonth, n);
+                            });
+
+                            daysGrid.appendChild(dayBtn);
+                        }
+                    }
+
+                    function selectDate(year, monthIndex, day) {
+                        const isoStr = formatIso(year, monthIndex, day);
+                        const displayStr = formatDisplay(year, monthIndex, day);
+
+                        selectedDateIso = isoStr;
+                        hiddenInput.value = isoStr;
+                        triggerInput.value = displayStr;
+
+                        currentViewDate = new Date(year, monthIndex, day);
+                        closePopover();
+
+                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                        const inlineOnchange = hiddenInput.getAttribute('data-onchange');
+                        if (inlineOnchange) {
+                            try {
+                                const fn = new Function(inlineOnchange);
+                                fn.call(hiddenInput);
+                            } catch (err) {
+                                console.error('Error executing inline datepicker onchange:', err);
+                            }
+                        }
+                    }
+
+                    function clearDate() {
+                        selectedDateIso = '';
+                        hiddenInput.value = '';
+                        triggerInput.value = '';
+                        closePopover();
+
+                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                        const inlineOnchange = hiddenInput.getAttribute('data-onchange');
+                        if (inlineOnchange) {
+                            try {
+                                const fn = new Function(inlineOnchange);
+                                fn.call(hiddenInput);
+                            } catch (err) {
+                                console.error('Error executing inline datepicker onchange:', err);
+                            }
+                        }
+                    }
+
+                    function openPopover() {
+                        // Close all other popovers and select menus
+                        document.querySelectorAll('.custom-datepicker-popover').forEach(p => {
+                            if (p !== popover) p.classList.add('hidden');
+                        });
+                        document.querySelectorAll('.custom-select-menu').forEach(m => m.classList.add('hidden'));
+
+                        renderCalendar();
+                        popover.classList.remove('hidden');
+                        triggerInput.setAttribute('aria-expanded', 'true');
+                        triggerInput.classList.add('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                    }
+
+                    function closePopover() {
+                        popover.classList.add('hidden');
+                        triggerInput.setAttribute('aria-expanded', 'false');
+                        triggerInput.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                    }
+
+                    triggerInput.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        if (hiddenInput.disabled) return;
+                        if (popover.classList.contains('hidden')) {
+                            openPopover();
+                        } else {
+                            closePopover();
+                        }
+                    });
+
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            currentViewDate.setMonth(currentViewDate.getMonth() - 1);
+                            renderCalendar();
+                        });
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            currentViewDate.setMonth(currentViewDate.getMonth() + 1);
+                            renderCalendar();
+                        });
+                    }
+
+                    if (clearBtn) {
+                        clearBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            clearDate();
+                        });
+                    }
+
+                    if (todayBtn) {
+                        todayBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            const now = new Date();
+                            selectDate(now.getFullYear(), now.getMonth(), now.getDate());
+                        });
+                    }
+
+                    triggerInput.addEventListener('keydown', function (e) {
+                        if (hiddenInput.disabled) return;
+                        if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (popover.classList.contains('hidden')) {
+                                openPopover();
+                            }
+                        } else if (e.key === 'Escape') {
+                            closePopover();
+                        }
+                    });
+                });
+            }
+
+            initCustomDatepickers();
+
             // Click outside handler
             document.addEventListener('click', function () {
                 dropdownWrappers.forEach(w => {
@@ -357,6 +605,18 @@
                         if (trigger) trigger.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
                     }
                 });
+
+                document.querySelectorAll('.custom-datepicker-wrapper').forEach(wrapper => {
+                    const popover = wrapper.querySelector('.custom-datepicker-popover');
+                    const triggerInput = wrapper.querySelector('.custom-datepicker-trigger');
+                    if (popover && !popover.classList.contains('hidden')) {
+                        popover.classList.add('hidden');
+                        if (triggerInput) {
+                            triggerInput.setAttribute('aria-expanded', 'false');
+                            triggerInput.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                        }
+                    }
+                });
             });
 
             document.addEventListener('keydown', function (e) {
@@ -372,8 +632,21 @@
                             if (trigger) trigger.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
                         }
                     });
+
+                    document.querySelectorAll('.custom-datepicker-wrapper').forEach(wrapper => {
+                        const popover = wrapper.querySelector('.custom-datepicker-popover');
+                        const triggerInput = wrapper.querySelector('.custom-datepicker-trigger');
+                        if (popover && !popover.classList.contains('hidden')) {
+                            popover.classList.add('hidden');
+                            if (triggerInput) {
+                                triggerInput.setAttribute('aria-expanded', 'false');
+                                triggerInput.classList.remove('border-emerald-600', 'ring-2', 'ring-emerald-600/15');
+                            }
+                        }
+                    });
                 }
             });
+
 
             const mobileTrigger = document.getElementById('mobile-menu-trigger');
             const mobileMenu = document.getElementById('mobile-menu');

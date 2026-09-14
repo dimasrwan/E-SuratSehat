@@ -89,7 +89,7 @@
                         <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Umur: {{ $mabaData->umur }} tahun</span>
                         @endif
                     </div>
-                    <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ old('tanggal_lahir', $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : '') }}" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <x-form-datepicker name="tanggal_lahir" id="tanggal_lahir" :value="old('tanggal_lahir', $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : '')" required />
                 </div>
 
                 <!-- Jenis Kelamin -->

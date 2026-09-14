@@ -91,7 +91,7 @@
                 <!-- Date Filter -->
                 <div>
                     <label for="tanggal" class="block text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Tanggal Jadwal/Pemeriksa</label>
-                    <input type="date" name="tanggal" id="tanggal" value="{{ $tanggal ?? '' }}" onchange="this.closest('form').submit()" class="w-full h-[42px] px-3 bg-white border border-[#D9E1E7] rounded-lg text-[13px] text-slate-800 font-medium focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15 transition duration-150">
+                    <x-form-datepicker name="tanggal" id="tanggal" :value="$tanggal ?? ''" onchange="this.closest('form').submit()" />
                 </div>
 
                 <!-- Session Filter -->

@@ -87,7 +87,14 @@
                         <label class="block mb-2 text-sm font-medium text-gray-700">Tempat & Tanggal Lahir</label>
                         <div class="flex flex-col sm:flex-row gap-4">
                             <input type="text" name="tempat_lahir" id="tempat_lahir" value="{{ old('tempat_lahir', $mabaData->tempat_lahir ?? '') }}" placeholder="Kota kelahiran" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full sm:w-1/2 p-3 transition duration-150">
-                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ old('tanggal_lahir', isset($mabaData) && $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : '') }}" onchange="calculateAge()" {{ isset($mabaData) && $mabaData ? 'readonly' : '' }} class="{{ isset($mabaData) && $mabaData ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-gray-50 text-gray-900 focus:ring-emerald-500 focus:border-emerald-500' }} border border-gray-300 text-sm rounded-xl block w-full sm:w-1/2 p-3 transition duration-150">
+                            @if(isset($mabaData) && $mabaData)
+                                <input type="text" readonly value="{{ isset($mabaData) && $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('d/m/Y') : '' }}" class="bg-gray-100 border border-gray-300 text-gray-700 font-medium text-sm rounded-xl block w-full sm:w-1/2 p-3 cursor-not-allowed">
+                                <input type="hidden" name="tanggal_lahir" id="tanggal_lahir" value="{{ isset($mabaData) && $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : '' }}">
+                            @else
+                                <div class="w-full sm:w-1/2">
+                                    <x-form-datepicker name="tanggal_lahir" id="tanggal_lahir" :value="old('tanggal_lahir', isset($mabaData) && $mabaData->tanggal_lahir ? $mabaData->tanggal_lahir->format('Y-m-d') : '')" onchange="calculateAge()" />
+                                </div>
+                            @endif
                         </div>
                     </div>
 

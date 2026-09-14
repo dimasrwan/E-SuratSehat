@@ -62,7 +62,9 @@
                         <label class="block mb-2 text-sm font-medium text-gray-700">Tempat, Tanggal Lahir</label>
                         <div class="flex flex-col sm:flex-row gap-4">
                             <input type="text" name="tempat_lahir" id="tempat_lahir" value="{{ old('tempat_lahir', $pemeriksaan->tempat_lahir) }}" placeholder="Kota kelahiran" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:w-1/2 p-3 transition duration-150">
-                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ old('tanggal_lahir', $pemeriksaan->tanggal_lahir) }}" onchange="calculateAge()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full sm:w-1/2 p-3 transition duration-150">
+                            <div class="w-full sm:w-1/2">
+                                <x-form-datepicker name="tanggal_lahir" id="tanggal_lahir" :value="old('tanggal_lahir', $pemeriksaan->tanggal_lahir)" onchange="calculateAge()" />
+                            </div>
                         </div>
                     </div>
 

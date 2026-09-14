@@ -1,33 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-<div>
-    <div class="mb-6 flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-gray-800">Preview Surat Keterangan Sehat</h2>
-        <div class="flex gap-2">
-            <a href="{{ route('pemeriksaan.show', $pemeriksaan->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-300 transition">
+<div class="max-w-6xl mx-auto space-y-6">
+    <!-- Header & Action Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-1">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Preview Surat Keterangan Sehat</h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-normal mt-0.5">Pratinjau surat sebelum dikirim atau diunduh.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+            <!-- Kembali -->
+            <a href="{{ route('pemeriksaan.show', $pemeriksaan->id) }}" class="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold text-xs rounded-lg shadow-2xs transition duration-150 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Kembali
             </a>
-            
-            <form action="{{ route('pemeriksaan.sendEmail', $pemeriksaan->id) }}" method="POST" class="inline" onsubmit="showLoading(this)">
+
+            <!-- Kirim ke Email -->
+            <form action="{{ route('pemeriksaan.sendEmail', $pemeriksaan->id) }}" method="POST" class="inline" onsubmit="return showLoading(this)">
                 @csrf
-                <button type="submit" id="btn-kirim" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-800 transition">
-                    <svg id="icon-normal" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    <svg id="icon-loading" class="w-5 h-5 mr-2 hidden animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                <button type="submit" id="btn-kirim" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs rounded-lg shadow-2xs transition duration-150 flex items-center gap-1.5">
+                    <svg id="icon-normal" class="w-3.5 h-3.5 text-sky-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <svg id="icon-loading" class="w-3.5 h-3.5 hidden animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                     <span id="text-kirim">Kirim ke Email</span>
                 </button>
             </form>
 
-            <a href="{{ route('pemeriksaan.download', $pemeriksaan->id) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <!-- Download PDF -->
+            <a href="{{ route('pemeriksaan.download', $pemeriksaan->id) }}" target="_blank" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-lg shadow-2xs transition duration-150 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 Download PDF
             </a>
         </div>
     </div>
 
-    <!-- Paper Container -->
-    <div class="bg-gray-200 p-8 rounded-lg flex justify-center overflow-x-auto">
-        <div class="bg-white shadow-xl" style="width: 210mm; height: 297mm; padding: 10px 40px; position: relative; box-sizing: border-box; overflow: hidden;">
+    <!-- Paper Container (Clean Modern Document Viewer Frame) -->
+    <div class="bg-slate-200/70 p-4 sm:p-8 rounded-xl border border-slate-300/80 shadow-2xs flex justify-center overflow-x-auto">
+        <div class="bg-white shadow-xl rounded-xs" style="width: 210mm; min-height: 297mm; padding: 10px 40px; position: relative; box-sizing: border-box; overflow: hidden;">
             {{-- === EXACT COPY OF PDF CSS === --}}
             <style scoped>
                 .pdf-body {
@@ -256,7 +265,7 @@
 @push('scripts')
 <script>
     function showLoading(form) {
-        event.preventDefault();
+        if (event) event.preventDefault();
         const btn = document.getElementById('btn-kirim');
         const iconNormal = document.getElementById('icon-normal');
         const iconLoading = document.getElementById('icon-loading');
@@ -293,3 +302,4 @@
     }
 </script>
 @endpush
+

@@ -96,7 +96,7 @@
                     </div>
                     <div>
                         <label for="tanggal_lahir" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">5. Tanggal Lahir <span class="text-rose-500">*</span></label>
-                        <input type="date" name="tanggal_lahir" id="tanggal_lahir" value="{{ old('tanggal_lahir', $claimedMaba->tanggal_lahir ? $claimedMaba->tanggal_lahir->format('Y-m-d') : '') }}" required onchange="calculateAgePreview()" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:bg-white transition duration-150">
+                        <x-form-datepicker name="tanggal_lahir" id="tanggal_lahir" :value="old('tanggal_lahir', $claimedMaba->tanggal_lahir ? $claimedMaba->tanggal_lahir->format('Y-m-d') : '')" onchange="calculateAgePreview()" required />
                     </div>
                 </div>
 
