@@ -18,40 +18,61 @@ class FakultasProdiController extends Controller
     public function index(Request $request)
     {
         $search = trim($request->input('search', ''));
+        $fakultas_id = $request->input('fakultas_id', 'all');
         $status = $request->input('status', 'all');
 
-        $query = Fakultas::with(['programStudi' => function ($q) use ($search, $status) {
-            if ($status === 'active') {
-                $q->where('is_active', true);
-            } elseif ($status === 'inactive') {
-                $q->where('is_active', false);
-            }
+        $query = Fakultas::query()->orderBy('sort_order', 'asc');
 
-            if (!empty($search)) {
-                $q->where('nama', 'LIKE', "%{$search}%");
-            }
-            $q->orderBy('nama', 'asc');
-        }]);
+        if (!empty($fakultas_id) && $fakultas_id !== 'all') {
+            $query->where('id', (int)$fakultas_id);
+        }
 
         if ($status === 'active') {
             $query->where('is_active', true);
         } elseif ($status === 'inactive') {
-            $query->where('is_active', false);
+            $query->where(function ($q) {
+                $q->where('is_active', false)
+                  ->orWhereHas('programStudi', function ($pq) {
+                      $pq->where('is_active', false);
+                  });
+            });
         }
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'LIKE', "%{$search}%")
                   ->orWhere('kode', 'LIKE', "%{$search}%")
-                  ->orWhereHas('programStudi', function ($pQuery) use ($search) {
-                      $pQuery->where('nama', 'LIKE', "%{$search}%");
+                  ->orWhereHas('programStudi', function ($pq) use ($search) {
+                      $pq->where('nama', 'LIKE', "%{$search}%");
                   });
             });
         }
 
-        $fakultas = $query->orderBy('nama', 'asc')->get();
+        $query->with(['programStudi' => function ($pq) use ($search, $status) {
+            if ($status === 'active') {
+                $pq->where('is_active', true);
+            } elseif ($status === 'inactive') {
+                $pq->where('is_active', false);
+            }
 
-        return view('admin.fakultas_prodi.index', compact('fakultas', 'search', 'status'));
+            if (!empty($search)) {
+                $pq->where(function ($subPq) use ($search) {
+                    $subPq->where('nama', 'LIKE', "%{$search}%")
+                          ->orWhereHas('fakultas', function ($fq) use ($search) {
+                              $fq->where('nama', 'LIKE', "%{$search}%")
+                                ->orWhere('kode', 'LIKE', "%{$search}%");
+                          });
+                });
+            }
+
+            $pq->orderBy('sort_order', 'asc');
+        }]);
+
+        $fakultas = $query->get();
+
+        $masterFakultasOptions = ['all' => 'Semua Fakultas'] + Fakultas::orderBy('sort_order', 'asc')->pluck('nama', 'id')->toArray();
+
+        return view('admin.fakultas_prodi.index', compact('fakultas', 'search', 'fakultas_id', 'status', 'masterFakultasOptions'));
     }
 
     /**
@@ -228,7 +249,7 @@ class FakultasProdiController extends Controller
     {
         $prodiList = $fakultas->programStudi()
             ->where('is_active', true)
-            ->orderBy('nama', 'asc')
+            ->orderBy('sort_order', 'asc')
             ->get(['id', 'nama', 'is_active']);
 
         return response()->json([

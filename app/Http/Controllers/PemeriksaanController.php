@@ -261,9 +261,9 @@ class PemeriksaanController extends Controller
         // Master Data Fakultas & Program Studi for grouped searchable dropdown
         $masterFakultas = \App\Models\Fakultas::where('is_active', true)
             ->with(['programStudi' => function ($q) {
-                $q->where('is_active', true)->orderBy('nama', 'asc');
+                $q->where('is_active', true)->orderBy('sort_order', 'asc');
             }])
-            ->orderBy('nama', 'asc')
+            ->orderBy('sort_order', 'asc')
             ->get();
 
         $availableSesi = \App\Models\MabaData::whereNotNull('sesi_jadwal')

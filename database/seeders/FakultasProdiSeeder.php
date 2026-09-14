@@ -97,8 +97,8 @@ class FakultasProdiSeeder extends Seeder
                     'Teknik Lingkungan',
                     'Biologi',
                     'Kimia',
-                    'Teknologi Informasi',
                     'Teknik Fisika',
+                    'Teknologi Informasi',
                 ]
             ],
             [
@@ -126,27 +126,42 @@ class FakultasProdiSeeder extends Seeder
             ],
         ];
 
-        foreach ($data as $fData) {
-            $fakultas = Fakultas::firstOrCreate(
-                ['kode' => $fData['kode']],
-                ['nama' => $fData['nama'], 'is_active' => true]
-            );
-
-            // Ensure name is accurate if updated
-            if ($fakultas->nama !== $fData['nama']) {
-                $fakultas->update(['nama' => $fData['nama']]);
+        foreach ($data as $fIndex => $fData) {
+            $fSortOrder = $fIndex + 1;
+            $fakultas = Fakultas::where('kode', $fData['kode'])->first();
+            
+            if (!$fakultas) {
+                $fakultas = Fakultas::create([
+                    'kode' => $fData['kode'],
+                    'nama' => $fData['nama'],
+                    'is_active' => true,
+                    'sort_order' => $fSortOrder,
+                ]);
+            } else {
+                $fakultas->update([
+                    'nama' => $fData['nama'],
+                    'sort_order' => $fSortOrder,
+                ]);
             }
 
-            foreach ($fData['prodi'] as $pNama) {
-                ProgramStudi::firstOrCreate(
-                    [
+            foreach ($fData['prodi'] as $pIndex => $pNama) {
+                $pSortOrder = $pIndex + 1;
+                $prodi = ProgramStudi::where('fakultas_id', $fakultas->id)
+                    ->where('nama', $pNama)
+                    ->first();
+
+                if (!$prodi) {
+                    ProgramStudi::create([
                         'fakultas_id' => $fakultas->id,
                         'nama' => $pNama,
-                    ],
-                    [
                         'is_active' => true,
-                    ]
-                );
+                        'sort_order' => $pSortOrder,
+                    ]);
+                } else {
+                    $prodi->update([
+                        'sort_order' => $pSortOrder,
+                    ]);
+                }
             }
         }
     }

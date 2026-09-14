@@ -129,7 +129,7 @@ class MabaManagementController extends Controller
         $mabaData->load(['tahunMaba', 'pemeriksaan']);
 
         $fakultasOptions = \App\Models\Fakultas::where('is_active', true)
-            ->orderBy('nama', 'asc')
+            ->orderBy('sort_order', 'asc')
             ->pluck('nama')
             ->toArray();
 
