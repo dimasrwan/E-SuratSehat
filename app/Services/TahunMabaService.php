@@ -47,7 +47,8 @@ class TahunMabaService
             // Set all years to inactive
             TahunMaba::query()->update(['is_active' => false]);
 
-            // Set target year to active
+            // Refresh target model instance and set to active
+            $target->fresh();
             $target->is_active = true;
             $target->save();
 
