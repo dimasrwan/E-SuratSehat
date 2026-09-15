@@ -87,9 +87,9 @@ class AdminImportBiroTest extends TestCase
             ->assertSee('Import Data Biro Maba');
     }
 
-    public function test_file_non_excel_seperti_pdf_ditolak_validasi()
+    public function test_file_tidak_didukung_seperti_docx_ditolak_validasi()
     {
-        $file = UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+        $file = UploadedFile::fake()->create('document.docx', 100, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
         $this->actingAs($this->admin)
             ->post(route('admin.import.preview.store'), [
@@ -325,5 +325,151 @@ class AdminImportBiroTest extends TestCase
         $batch->refresh();
         $this->assertEquals('CANCELLED', $batch->status);
         $this->assertEquals(0, MabaData::where('nama_biro', 'Cancel Test')->count());
+    }
+
+    public function test_pdf_schedule_parser_service_membaca_format_jadwal_2026_dengan_benar()
+    {
+        $parser = new \App\Services\PdfScheduleParserService();
+        $sampleText = "
+DAFTAR JADWAL PEMERIKSAAN KESEHATAN
+MAHASISWA BARU TAHUN AJARAN 2026/2027
+
+FAKULTAS TARBIYAH DAN KEGURUAN
+Prodi. Bimbingan Konseling
+
+1 | S1 Bimbingan Konseling | AFIFA JAHRA | Sabtu, 15 Agustus 2026 | Sesi 1 | 08.00 s/d 12.30
+2 | S1 Bimbingan Konseling | IMELDA | Sabtu, 15 Agustus 2026 | Sesi 2 | 13.00 s/d 17.30
+3 | S1 Bimbingan Konseling | MUHAMMAD RAIHAN ALBAR | Jumat, 21 Agustus 2026 | Sesi 1 | 08.00 s/d 12.00
+Halaman 1 dari 100
+";
+
+        $results = $parser->parseTextContent($sampleText);
+
+        $this->assertCount(3, $results);
+
+        // Row 1
+        $this->assertEquals('AFIFA JAHRA', $results[0]['nama_biro']);
+        $this->assertEquals('Bimbingan Konseling', $results[0]['program_studi_biro']);
+        $this->assertEquals('FAKULTAS TARBIYAH DAN KEGURUAN', $results[0]['fakultas_biro']);
+        $this->assertEquals('2026-08-15', $results[0]['tanggal_jadwal']);
+        $this->assertEquals('Sesi 1', $results[0]['sesi_jadwal']);
+        $this->assertEquals('08.00 s/d 12.30', $results[0]['waktu_jadwal']);
+
+        // Row 2
+        $this->assertEquals('IMELDA', $results[1]['nama_biro']);
+        $this->assertEquals('Sesi 2', $results[1]['sesi_jadwal']);
+        $this->assertEquals('13.00 s/d 17.30', $results[1]['waktu_jadwal']);
+
+        // Row 3 (Custom time on Friday: 08.00 s/d 12.00)
+        $this->assertEquals('MUHAMMAD RAIHAN ALBAR', $results[2]['nama_biro']);
+        $this->assertEquals('2026-08-21', $results[2]['tanggal_jadwal']);
+        $this->assertEquals('08.00 s/d 12.00', $results[2]['waktu_jadwal']);
+    }
+
+    public function test_download_template_excel_biro_berhasil()
+    {
+        $this->actingAs($this->admin)
+            ->get(route('admin.import.template'))
+            ->assertStatus(200)
+            ->assertHeader('content-disposition');
+    }
+
+    public function test_pdf_schedule_parser_memproses_format_space_separated_dan_transisi_fakultas_prodi()
+    {
+        $parser = new \App\Services\PdfScheduleParserService();
+        $sampleText = "
+DAFTAR JADWAL PEMERIKSAAN KESEHATAN
+MAHASISWA BARU TAHUN AJARAN 2026/2027
+Nama Peserta Hari / Tanggal Sesi Waktu Pemeriksaan
+
+FAKULTAS TARBIYAH DAN KEGURUAN
+Prodi. Bimbingan Konseling
+
+1 S1 Bimbingan Konseling AFIFA JAHRA Sabtu, 15 Agustus 2026 Sesi 1 08.00 s/d 12.30
+2 S1 Bimbingan Konseling MUHAMMAD RAIHAN ALBAR Sabtu, 15 Agustus 2026 Sesi 2 13.00 s/d 17.30
+
+FAKULTAS SAINS DAN TEKNOLOGI
+Prodi. Teknologi Informasi
+
+3 S1 Teknologi Informasi CUT RAHMAWATI Jumat, 21 Agustus 2026 Sesi 1 08.00 s/d 12.00
+4 S1 Teknologi Informasi DEDI KURNIAWAN Jumat, 21 Agustus 2026 Sesi 2 13.30 s/d 17.30
+
+Halaman 2 dari 50
+";
+
+        $results = $parser->parseTextContent($sampleText);
+
+        $this->assertCount(4, $results);
+
+        // Row 1: FTK
+        $this->assertEquals('AFIFA JAHRA', $results[0]['nama_biro']);
+        $this->assertEquals('Bimbingan Konseling', $results[0]['program_studi_biro']);
+        $this->assertEquals('FAKULTAS TARBIYAH DAN KEGURUAN', $results[0]['fakultas_biro']);
+        $this->assertEquals('2026-08-15', $results[0]['tanggal_jadwal']);
+        $this->assertEquals('Sesi 1', $results[0]['sesi_jadwal']);
+        $this->assertEquals('08.00 s/d 12.30', $results[0]['waktu_jadwal']);
+
+        // Row 3: Transisi ke SAINTEK & Teknologi Informasi
+        $this->assertEquals('CUT RAHMAWATI', $results[2]['nama_biro']);
+        $this->assertEquals('Teknologi Informasi', $results[2]['program_studi_biro']);
+        $this->assertEquals('FAKULTAS SAINS DAN TEKNOLOGI', $results[2]['fakultas_biro']);
+        $this->assertEquals('2026-08-21', $results[2]['tanggal_jadwal']);
+        $this->assertEquals('Sesi 1', $results[2]['sesi_jadwal']);
+        $this->assertEquals('08.00 s/d 12.00', $results[2]['waktu_jadwal']);
+    }
+
+    public function test_prodi_tidak_ada_di_master_diklasifikasikan_sebagai_error()
+    {
+        $this->seed(\Database\Seeders\FakultasProdiSeeder::class);
+
+        $file = $this->createExcelFile([
+            ['Nama', 'Program Studi', 'Tanggal', 'Sesi', 'Waktu'],
+            ['Mahasiswa Test', 'Prodi Tidak Terdaftar Master', '2027-09-15', 'Sesi 1', '08:00 WIB'],
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.import.preview.store'), [
+                'tahun_maba_id' => $this->tahun2027->id,
+                'file' => $file,
+            ]);
+
+        $batch = ImportBatch::latest('id')->first();
+        $this->assertEquals(1, $batch->error_rows);
+
+        $row = ImportBatchRow::where('import_batch_id', $batch->id)->first();
+        $this->assertEquals('ERROR', $row->classification);
+        $this->assertStringContainsString('tidak ditemukan di Master Program Studi', $row->error_messages);
+    }
+
+    public function test_legacy_4635_pemeriksaan_tetap_utuh_dan_maba_data_id_null_tetap_valid()
+    {
+        // Seed 5 legacy pemeriksaans with null maba_data_id
+        for ($i = 1; $i <= 5; $i++) {
+            Pemeriksaan::create([
+                'maba_data_id' => null,
+                'nomor_surat' => "00{$i}/Un.08/PPKES/09/2026",
+                'nama' => "Legacy Patient {$i}",
+                'pekerjaan' => 'Mahasiswa / Teknologi Informasi',
+                'status_pemeriksaan' => 'SELESAI',
+            ]);
+        }
+
+        $legacyCount = Pemeriksaan::whereNull('maba_data_id')->count();
+        $this->assertEquals(5, $legacyCount);
+
+        // Run import
+        $file = $this->createExcelFile([
+            ['Nama', 'Program Studi', 'Tanggal'],
+            ['Peserta Import Baru', 'Teknologi Informasi', '2027-09-15'],
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.import.preview.store'), ['tahun_maba_id' => $this->tahun2027->id, 'file' => $file]);
+
+        $batch = ImportBatch::latest('id')->first();
+        $this->actingAs($this->admin)->post(route('admin.import.confirm', $batch->id));
+
+        // Legacy count & null maba_data_id MUST NOT change
+        $this->assertEquals(5, Pemeriksaan::whereNull('maba_data_id')->count());
     }
 }

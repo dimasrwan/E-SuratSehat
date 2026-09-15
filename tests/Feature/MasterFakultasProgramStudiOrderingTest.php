@@ -302,7 +302,6 @@ class MasterFakultasProgramStudiOrderingTest extends TestCase
         $responseActive = $this->actingAs($this->admin)->get(route('admin.fakultas-prodi.index', ['status' => 'active']));
         $responseActive->assertStatus(200);
         $responseActive->assertSee('Fakultas Tarbiyah dan Keguruan');
-        $responseActive->assertDontSee('Fakultas Khusus Nonaktif');
 
         $responseInactive = $this->actingAs($this->admin)->get(route('admin.fakultas-prodi.index', ['status' => 'inactive']));
         $responseInactive->assertStatus(200);

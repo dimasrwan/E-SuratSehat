@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Admin Import Biro Routes
         Route::get('import', [ImportBiroController::class, 'index'])->name('import.index');
+        Route::get('import/template', [ImportBiroController::class, 'downloadTemplate'])->name('import.template');
         Route::post('import/preview', [ImportBiroController::class, 'preview'])->name('import.preview.store');
         Route::get('import/preview/{batch}', [ImportBiroController::class, 'showPreview'])->name('import.preview');
         Route::post('import/confirm/{batch}', [ImportBiroController::class, 'confirm'])->name('import.confirm');

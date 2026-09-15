@@ -38,34 +38,93 @@ class BiroImportService
         $originalFilename = $file->getClientOriginalName();
         $storedFilename = $file->store('imports');
         $fullPath = Storage::path($storedFilename);
+        // Determine file type and extract raw rows array
+        $extension = strtolower($file->getClientOriginalExtension());
+        $rawRows = [];
 
-        // Load Spreadsheet
-        $spreadsheet = IOFactory::load($fullPath);
-        $worksheet = $spreadsheet->getActiveSheet();
-        $rows = $worksheet->toArray(null, true, true, true);
+        // Pre-fetch Master ProgramStudi map for fast matching & validation
+        // Map normalized name -> ProgramStudi model (with fakultas)
+        $masterProdis = \App\Models\ProgramStudi::with('fakultas')->get();
+        $masterProdiMap = [];
+        foreach ($masterProdis as $p) {
+            $norm = $this->normalizeString($p->nama);
+            $normClean = preg_replace('/^(s1|d3|s2|s3)\s+/', '', $norm);
+            $normClean = preg_replace('/\s*\(.*?\)\s*/', ' ', $normClean);
+            $normClean = str_replace(['`', "'", '’', '-'], ['', '', '', ' '], $normClean);
+            $normClean = preg_replace('/\s+dan\s+hukum$/i', '', $normClean);
+            $normClean = str_replace(' dan ', ' ', $normClean);
+            $normClean = preg_replace('/\s+/', ' ', trim($normClean));
 
-        if (empty($rows)) {
-            throw new \Exception('File kosan atau tidak berisi data.');
+            $masterProdiMap[$norm] = $p;
+            $masterProdiMap[$normClean] = $p;
         }
 
-        // Parse Header (Row 1)
-        $headerRow = array_shift($rows);
-        $headerMap = $this->parseHeaders($headerRow);
+        if ($extension === 'pdf') {
+            $pdfParser = new PdfScheduleParserService();
+            $parsedPdfRows = $pdfParser->parsePdf($fullPath);
 
-        if (!isset($headerMap['nama'])) {
-            throw new \Exception('Kolom "Nama" (atau "Nama Maba" / "Nama Mahasiswa") belum ditemukan pada file.');
-        }
+            if (empty($parsedPdfRows)) {
+                throw new \Exception('Tidak ada data peserta yang berhasil dibaca dari file PDF ini.');
+            }
 
-        if (!isset($headerMap['program_studi'])) {
-            throw new \Exception('Kolom "Program Studi" (atau "Prodi" / "Jurusan") belum ditemukan pada file.');
+            foreach ($parsedPdfRows as $idx => $pr) {
+                $rawRows[] = [
+                    'nama' => $pr['nama_biro'],
+                    'program_studi' => $pr['program_studi_biro'],
+                    'tanggal_jadwal' => $pr['tanggal_jadwal'] ?? $pr['raw_tanggal'],
+                    'sesi_jadwal' => $pr['sesi_jadwal'],
+                    'waktu_jadwal' => $pr['waktu_jadwal'],
+                    'fakultas' => $pr['fakultas_biro'],
+                ];
+            }
+        } else {
+            // Load Spreadsheet (XLSX, XLS, CSV)
+            $spreadsheet = IOFactory::load($fullPath);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $spreadsheetRows = $worksheet->toArray(null, true, true, true);
+
+            if (empty($spreadsheetRows)) {
+                throw new \Exception('File kosong atau tidak berisi data.');
+            }
+
+            // Parse Header (Row 1)
+            $headerRow = array_shift($spreadsheetRows);
+            $headerMap = $this->parseHeaders($headerRow);
+
+            if (!isset($headerMap['nama'])) {
+                throw new \Exception('Kolom "Nama Peserta" (atau "Nama" / "Nama Maba") belum ditemukan pada file.');
+            }
+
+            if (!isset($headerMap['program_studi'])) {
+                throw new \Exception('Kolom "Program Studi" (atau "Prodi" / "Jurusan") belum ditemukan pada file.');
+            }
+
+            foreach ($spreadsheetRows as $sRow) {
+                $rawNama = isset($headerMap['nama']) && isset($sRow[$headerMap['nama']]) ? $sRow[$headerMap['nama']] : null;
+                $rawProdi = isset($headerMap['program_studi']) && isset($sRow[$headerMap['program_studi']]) ? $sRow[$headerMap['program_studi']] : null;
+                $rawTanggal = isset($headerMap['tanggal_jadwal']) && isset($sRow[$headerMap['tanggal_jadwal']]) ? $sRow[$headerMap['tanggal_jadwal']] : null;
+                $rawSesi = isset($headerMap['sesi_jadwal']) && isset($sRow[$headerMap['sesi_jadwal']]) ? $sRow[$headerMap['sesi_jadwal']] : null;
+                $rawWaktu = isset($headerMap['waktu_jadwal']) && isset($sRow[$headerMap['waktu_jadwal']]) ? $sRow[$headerMap['waktu_jadwal']] : null;
+
+                if ($this->isEmptyRow($rawNama, $rawProdi, $rawTanggal, $rawSesi, $rawWaktu)) {
+                    continue;
+                }
+
+                $rawRows[] = [
+                    'nama' => $rawNama,
+                    'program_studi' => $rawProdi,
+                    'tanggal_jadwal' => $rawTanggal,
+                    'sesi_jadwal' => $rawSesi,
+                    'waktu_jadwal' => $rawWaktu,
+                    'fakultas' => null,
+                ];
+            }
         }
 
         // Pre-fetch existing MabaData for strict year isolation
         $existingMabas = MabaData::where('tahun_maba_id', $tahunMaba->id)->get();
 
         // Build lookup maps for fast matching
-        // Exact Key: nama_clean|prodi_clean|tanggal|sesi|waktu
-        // Possible Key: nama_clean|prodi_clean
         $exactMap = [];
         $possibleMap = [];
 
@@ -102,32 +161,24 @@ class BiroImportService
 
         $batchRowsToInsert = [];
 
-        $rowNumber = 1; // Header is row 1
-        foreach ($rows as $row) {
+        $rowNumber = 1;
+        foreach ($rawRows as $item) {
             $rowNumber++;
-            
-            // Extract raw values from columns
-            $rawNama = isset($headerMap['nama']) && isset($row[$headerMap['nama']]) ? $row[$headerMap['nama']] : null;
-            $rawProdi = isset($headerMap['program_studi']) && isset($row[$headerMap['program_studi']]) ? $row[$headerMap['program_studi']] : null;
-            $rawTanggal = isset($headerMap['tanggal_jadwal']) && isset($row[$headerMap['tanggal_jadwal']]) ? $row[$headerMap['tanggal_jadwal']] : null;
-            $rawSesi = isset($headerMap['sesi_jadwal']) && isset($row[$headerMap['sesi_jadwal']]) ? $row[$headerMap['sesi_jadwal']] : null;
-            $rawWaktu = isset($headerMap['waktu_jadwal']) && isset($row[$headerMap['waktu_jadwal']]) ? $row[$headerMap['waktu_jadwal']] : null;
-
-            // Skip completely empty trailing rows
-            if ($this->isEmptyRow($rawNama, $rawProdi, $rawTanggal, $rawSesi, $rawWaktu)) {
-                continue;
-            }
-
             $totalRows++;
 
-            // Clean & Normalize
+            $rawNama = $item['nama'];
+            $rawProdi = $item['program_studi'];
+            $rawTanggal = $item['tanggal_jadwal'];
+            $rawSesi = $item['sesi_jadwal'];
+            $rawWaktu = $item['waktu_jadwal'];
+
             $namaBiro = $this->normalizeStringDisplay($rawNama);
             $prodiBiro = $this->normalizeStringDisplay($rawProdi);
             $tanggalJadwal = $this->parseDateValue($rawTanggal);
             $sesiJadwal = $this->normalizeStringDisplay($rawSesi);
             $waktuJadwal = $this->normalizeStringDisplay($rawWaktu);
 
-            // Validation
+            // Validation against Master ProgramStudi
             $errors = [];
             if (empty($namaBiro)) {
                 $errors[] = 'Nama Maba wajib diisi.';
@@ -135,6 +186,21 @@ class BiroImportService
 
             if (empty($prodiBiro)) {
                 $errors[] = 'Program Studi wajib diisi.';
+            } else {
+                // Match against master ProgramStudi (case insensitive & normalized)
+                $normProdi = $this->normalizeString($prodiBiro);
+                $normProdiClean = preg_replace('/^(s1|d3|s2|s3)\s+/', '', $normProdi);
+                $normProdiClean = preg_replace('/\s*\(.*?\)\s*/', ' ', $normProdiClean);
+                $normProdiClean = str_replace(['`', "'", '’', '-'], ['', '', '', ' '], $normProdiClean);
+                $normProdiClean = preg_replace('/\s+dan\s+hukum$/i', '', $normProdiClean);
+                $normProdiClean = str_replace(' dan ', ' ', $normProdiClean);
+                $normProdiClean = preg_replace('/\s+/', ' ', trim($normProdiClean));
+
+                $matchedProdi = $masterProdiMap[$normProdi] ?? ($masterProdiMap[$normProdiClean] ?? null);
+
+                if (!empty($masterProdiMap) && !$matchedProdi) {
+                    $errors[] = "Program Studi '{$prodiBiro}' tidak ditemukan di Master Program Studi.";
+                }
             }
 
             if (!empty($rawTanggal) && $tanggalJadwal === false) {

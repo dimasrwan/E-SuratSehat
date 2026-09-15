@@ -15,7 +15,11 @@
             <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Import Data Biro Maba</h1>
             <p class="text-xs text-slate-500 mt-1">Unggah file jadwal dan daftar Maba dari Biro untuk disimpan ke master data angkatan Maba.</p>
         </div>
-        <div>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.import.template') }}" class="inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-sm font-semibold px-4 py-2.5 rounded-xl border border-emerald-200 transition shadow-xs">
+                <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Download Template Excel
+            </a>
             <a href="{{ route('admin.import.history') }}" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-xl border border-slate-300 transition shadow-sm">
                 <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Riwayat Import
@@ -76,10 +80,10 @@
                 <!-- File Input -->
                 <div>
                     <label for="file" class="block text-sm font-medium text-slate-700 mb-2">
-                        File Data Biro (.xlsx, .xls, .csv) <span class="text-rose-500">*</span>
+                        File Data Biro (.xlsx, .xls, .csv, .pdf) <span class="text-rose-500">*</span>
                     </label>
-                    <input type="file" name="file" id="file" required accept=".xlsx,.xls,.csv" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 border border-slate-300 rounded-xl p-1 bg-slate-50 cursor-pointer">
-                    <p class="text-xs text-slate-400 mt-1.5">Maksimal ukuran file: 10 MB. Kolom wajib: <strong>Nama</strong>, <strong>Program Studi</strong>. Opsional: Tanggal, Sesi, Waktu.</p>
+                    <input type="file" name="file" id="file" required accept=".xlsx,.xls,.csv,.pdf" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 border border-slate-300 rounded-xl p-1 bg-slate-50 cursor-pointer">
+                    <p class="text-xs text-slate-400 mt-1.5">Maksimal ukuran file: 10 MB. Mendukung Excel (.xlsx, .xls), CSV (.csv), dan PDF Jadwal resmi 2026/2027.</p>
                     @error('file')
                         <p class="text-xs text-rose-600 mt-1.5 font-medium">{{ $message }}</p>
                     @enderror

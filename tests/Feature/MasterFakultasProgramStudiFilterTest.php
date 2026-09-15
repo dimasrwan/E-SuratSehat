@@ -40,7 +40,7 @@ class MasterFakultasProgramStudiFilterTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get(route('admin.fakultas-prodi.index'));
         $response->assertStatus(200);
-        $response->assertSee('Master Fakultas &amp; Program Studi', false);
+        $response->assertSee('Master Fakultas & Program Studi', false);
     }
 
     /** 2. Operator tidak dapat melihat. */

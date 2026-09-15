@@ -37,13 +37,13 @@ class ImportBiroController extends Controller
                 'required',
                 'file',
                 'max:10240', // 10MB
-                'mimes:xlsx,xls,csv,txt',
+                'mimes:xlsx,xls,csv,txt,pdf',
             ],
         ], [
             'tahun_maba_id.required' => 'Target Tahun Maba wajib dipilih.',
             'tahun_maba_id.exists' => 'Tahun Maba yang dipilih tidak terdaftar di sistem.',
             'file.required' => 'File data Biro wajib diunggah.',
-            'file.mimes' => 'Format file harus berupa Excel (.xlsx, .xls) atau CSV (.csv).',
+            'file.mimes' => 'Format file harus berupa Excel (.xlsx, .xls), CSV (.csv), atau PDF (.pdf).',
             'file.max' => 'Ukuran file maksimal adalah 10 MB.',
         ]);
 
@@ -124,5 +124,13 @@ class ImportBiroController extends Controller
             ->paginate(15);
 
         return view('admin.import.history', compact('batches'));
+    }
+
+    public function downloadTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\BiroTemplateExport(),
+            'Template_Import_Data_Biro_Maba.xlsx'
+        );
     }
 }

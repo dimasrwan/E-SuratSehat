@@ -327,7 +327,7 @@
             @csrf
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Nama Program Studi <span class="text-rose-500">*</span></label>
-                <input type="text" name="nama" required placeholder="Contoh: Pendidikan Agama Islam" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-emerald-600">
+                <input type="text" name="nama" required placeholder="Contoh: Nama Program Studi Baru" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-emerald-600">
             </div>
 
             <div class="flex items-center gap-2 pt-1">
