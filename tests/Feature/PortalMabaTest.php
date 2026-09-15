@@ -62,7 +62,7 @@ class PortalMabaTest extends TestCase
     {
         $response = $this->get('/portal-maba');
         $response->assertStatus(200);
-        $response->assertSee('Portal Data Kesehatan Maba');
+        $response->assertSee('Portal Mahasiswa Baru');
         $response->assertSee('Maba 2027');
     }
 

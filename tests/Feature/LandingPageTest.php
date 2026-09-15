@@ -20,6 +20,8 @@ class LandingPageTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('E-Surat Sehat');
         $response->assertSee('Klinik UIN Ar-Raniry Banda Aceh');
+        $response->assertSee('Portal Maba');
+        $response->assertSee('Isi Data Maba');
         $response->assertSee('Masuk ke Sistem');
     }
 

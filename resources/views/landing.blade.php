@@ -29,20 +29,25 @@
                 <!-- Desktop Navigation Links -->
                 <nav class="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600">
                     <a href="#beranda" class="hover:text-emerald-700 transition-colors">Beranda</a>
+                    <a href="{{ route('portal.index') }}" class="hover:text-emerald-700 transition-colors">Portal Maba</a>
                     <a href="#tentang" class="hover:text-emerald-700 transition-colors">Tentang</a>
                     <a href="#fitur" class="hover:text-emerald-700 transition-colors">Fitur</a>
                     <a href="#alur" class="hover:text-emerald-700 transition-colors">Alur Pelayanan</a>
                 </nav>
 
                 <!-- Action Button -->
-                <div class="hidden md:flex items-center">
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="{{ route('portal.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-lg border border-emerald-200 transition-all">
+                        <span>Isi Data Maba</span>
+                        <span>&rarr;</span>
+                    </a>
                     @auth
                         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs rounded-lg transition-all">
                             <span>Buka Dashboard</span>
                             <span class="text-xs">&rarr;</span>
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 px-4.5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs rounded-lg transition-all">
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-all">
                             <span>Masuk ke Sistem</span>
                             <span class="text-xs">&rarr;</span>
                         </a>
@@ -61,16 +66,20 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden border-b border-slate-100 bg-white px-4 pt-2 pb-4 space-y-2 text-sm font-semibold">
             <a href="#beranda" class="block px-3 py-2 rounded-md text-slate-700 hover:bg-slate-50">Beranda</a>
+            <a href="{{ route('portal.index') }}" class="block px-3 py-2 rounded-md text-emerald-800 font-bold hover:bg-emerald-50">Portal Maba</a>
             <a href="#tentang" class="block px-3 py-2 rounded-md text-slate-700 hover:bg-slate-50">Tentang</a>
             <a href="#fitur" class="block px-3 py-2 rounded-md text-slate-700 hover:bg-slate-50">Fitur</a>
             <a href="#alur" class="block px-3 py-2 rounded-md text-slate-700 hover:bg-slate-50">Alur Pelayanan</a>
-            <div class="pt-2">
+            <div class="pt-2 space-y-2">
+                <a href="{{ route('portal.index') }}" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-700 text-white font-bold rounded-lg text-xs">
+                    Isi Data Maba &rarr;
+                </a>
                 @auth
-                    <a href="{{ route('dashboard') }}" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-800 text-white font-bold rounded-lg text-xs">
+                    <a href="{{ route('dashboard') }}" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-800 text-white font-bold rounded-lg text-xs">
                         Buka Dashboard &rarr;
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-800 text-white font-bold rounded-lg text-xs">
+                    <a href="{{ route('login') }}" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-800 font-bold rounded-lg text-xs border border-slate-200">
                         Masuk ke Sistem &rarr;
                     </a>
                 @endauth
@@ -102,20 +111,21 @@
                     </p>
 
                     <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <a href="{{ route('portal.index') }}" class="inline-flex items-center justify-center gap-2 h-11 px-6 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-lg transition-colors shadow-sm shadow-emerald-700/20">
+                            <span>Isi Data Maba</span>
+                            <span>&rarr;</span>
+                        </a>
                         @auth
-                            <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center gap-2 h-11 px-6 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs sm:text-sm rounded-lg transition-colors">
-                                <span>Masuk ke Dashboard</span>
+                            <a href="{{ route('dashboard') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm rounded-lg transition-colors">
+                                <span>Buka Dashboard</span>
                                 <span>&rarr;</span>
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 h-11 px-6 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs sm:text-sm rounded-lg transition-colors">
+                            <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs sm:text-sm rounded-lg border border-slate-200 transition-colors">
                                 <span>Masuk ke Sistem</span>
                                 <span>&rarr;</span>
                             </a>
                         @endauth
-                        <a href="#fitur" class="inline-flex items-center justify-center h-11 px-5 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-xs sm:text-sm rounded-lg border border-slate-200 transition-colors">
-                            Pelajari Sistem
-                        </a>
                     </div>
                 </div>
 
@@ -153,6 +163,31 @@
                             <span>Email Queued</span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION KHUSUS MAHASISWA BARU -->
+    <section class="py-12 bg-emerald-50/70 border-b border-emerald-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl border border-emerald-200/80 p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xs">
+                <div class="space-y-2 max-w-2xl">
+                    <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-widest block">
+                        DATA MAHASISWA BARU
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                        Belum mengisi data diri?
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Lengkapi data pribadi Anda secara online sebelum proses pemeriksaan kesehatan di Klinik UIN Ar-Raniry Banda Aceh.
+                    </p>
+                </div>
+                <div class="flex-shrink-0 w-full md:w-auto">
+                    <a href="{{ route('portal.index') }}" class="inline-flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-lg transition-colors shadow-2xs">
+                        <span>Isi Data Maba</span>
+                        <span>&rarr;</span>
+                    </a>
                 </div>
             </div>
         </div>
